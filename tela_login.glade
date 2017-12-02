@@ -84,10 +84,12 @@
           <object class="GtkEntry" id="usuario">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
             <property name="margin_left">5</property>
             <property name="margin_right">10</property>
             <property name="margin_top">5</property>
             <property name="margin_bottom">5</property>
+            <property name="caps_lock_warning">False</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -104,6 +106,7 @@
             <property name="margin_bottom">5</property>
             <property name="visibility">False</property>
             <property name="invisible_char">●</property>
+            <property name="input_purpose">password</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -144,6 +147,7 @@
             <property name="margin_bottom">5</property>
             <property name="hexpand">True</property>
             <signal name="clicked" handler="on_logar_clicked" swapped="no"/>
+            <accelerator key="Return" signal="clicked"/>
           </object>
           <packing>
             <property name="left_attach">1</property>

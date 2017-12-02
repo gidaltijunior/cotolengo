@@ -20,7 +20,7 @@ class Login(object):
         self.criar_usuario = builder.get_object('criar_usuario')
         self.statusbar_login = builder.get_object('statusbar_login')
 
-        self.client, self.db, self.coll_usuarios = self.connect_db()
+        self.banco_dados, self.coll_usuarios = self.connect_db()
 
         builder.connect_signals({"gtk_main_quit": Gtk.main_quit,
                                  "on_criar_usuario_clicked": self.func_criar_usuario,
@@ -46,7 +46,9 @@ class Login(object):
                 self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
                                           'Conexão com banco de dados falhou.')
                 print('Banco de Dados não está disponível. Tentando novamente:', retries)
-        return client, db, coll_usuarios
+                self.tela_login.error_bell()
+        banco_dados = {'client': client, 'db': db}
+        return banco_dados, coll_usuarios
 
     def func_criar_usuario(self, widget):
         print('func_criar_usuario', widget)
@@ -63,20 +65,22 @@ class Login(object):
             else:
                 self.statusbar_login.push(self.statusbar_login.get_context_id('login'),
                                           'Usuário não autorizado.')
+                self.tela_login.error_bell()
                 return
         else:
             self.statusbar_login.push(self.statusbar_login.get_context_id('login'),
                                       'Usuário não cadastrado.')
+            self.tela_login.error_bell()
             return
 
         if self.validacao_ok is True:
             self.tela_login.hide()
-            modulobase = ModuloBase()
+            modulobase = ModuloBase(self.banco_dados)
             print(modulobase)
-            # NOVA JANELA VEM AQUI !!!!!!!!!!!!!!!!!!!!!!
         else:
             self.statusbar_login.push(self.statusbar_login.get_context_id('login'),
                                       'Senha incorreta.')
+            self.tela_login.error_bell()
 
     @staticmethod
     def compare_hashes(stored_hash, new_hash):

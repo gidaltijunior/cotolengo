@@ -28,8 +28,8 @@ class CriarUsuario(object):
 
         builder.connect_signals({"on_fechar_clicked": self.func_fechar,
                                  "on_enviar_solicitacao_clicked": self.func_enviar_solicitacao,
-                                 "on_senha_criar_focus_out_event": self.func_comparar_senhas,
-                                 "on_senha_repetir_focus_out_event": self.func_comparar_senhas})
+                                 "on_senha_criar_key_release_event": self.func_validar_formulario,
+                                 "on_senha_repetir_key_release_event": self.func_validar_formulario})
 
         self.enviar_solicitacao.set_sensitive(False)
 
@@ -46,6 +46,7 @@ class CriarUsuario(object):
             if item['usuario'] == self.nome_usuario.get_text():
                 self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('criar_usuario'),
                                                   'Nome de usuário já existente. Escolha outro.')
+                self.tela_criar_usuario.error_bell()
                 break
         else:
             self.usuarios_db.insert({
@@ -61,7 +62,7 @@ class CriarUsuario(object):
             self.usuario_criado = True
             # self.func_fechar(widget)
 
-    def func_comparar_senhas(self, widget, focus):  # compara se o campo senha e o campo repetir senha tem o mesmo valor
+    def func_validar_formulario(self, widget, focus):  # valida o formulario para habilitar o botao 'enviar solicitacao'
         print(widget, focus)
         if self.senha_criar.get_text() == self.senha_repetir.get_text() \
                 and len(str(self.senha_repetir.get_text())) > 3 \

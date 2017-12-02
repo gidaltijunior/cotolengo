@@ -130,6 +130,7 @@
             <property name="margin_bottom">5</property>
             <property name="hexpand">True</property>
             <signal name="clicked" handler="on_enviar_solicitacao_clicked" swapped="no"/>
+            <accelerator key="Return" signal="clicked"/>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -147,6 +148,7 @@ Deve ter pelo menos 4 dígitos.</property>
             <property name="margin_top">5</property>
             <property name="margin_bottom">5</property>
             <property name="hexpand">True</property>
+            <property name="activates_default">True</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -187,32 +189,11 @@ Deve ter pelo menos 4 dígitos.</property>
             <property name="hexpand">True</property>
             <property name="visibility">False</property>
             <property name="invisible_char">●</property>
-            <signal name="focus-out-event" handler="on_senha_criar_focus_out_event" swapped="no"/>
+            <signal name="key-release-event" handler="on_senha_criar_key_release_event" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>
             <property name="top_attach">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="senha_repetir">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="tooltip_text" translatable="yes">Digite sua senha novamente.
-Isso serve para evitar erros de digitação.
-Deve ter pelo menos 4 dígitos.</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">10</property>
-            <property name="margin_top">5</property>
-            <property name="margin_bottom">5</property>
-            <property name="hexpand">True</property>
-            <property name="visibility">False</property>
-            <property name="invisible_char">●</property>
-            <signal name="focus-out-event" handler="on_senha_repetir_focus_out_event" swapped="no"/>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">6</property>
           </packing>
         </child>
         <child>
@@ -286,6 +267,27 @@ Deve ter pelo menos 4 dígitos e ter o símbolo @.</property>
           <packing>
             <property name="left_attach">1</property>
             <property name="top_attach">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="senha_repetir">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Digite sua senha novamente.
+Isso serve para evitar erros de digitação.
+Deve ter pelo menos 4 dígitos.</property>
+            <property name="margin_left">5</property>
+            <property name="margin_right">10</property>
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
+            <property name="hexpand">True</property>
+            <property name="visibility">False</property>
+            <property name="invisible_char">●</property>
+            <signal name="key-release-event" handler="on_senha_repetir_key_release_event" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">6</property>
           </packing>
         </child>
       </object>

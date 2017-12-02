@@ -16,6 +16,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
+    <property name="icon_size">0</property>
   </object>
   <object class="GtkImage" id="image12">
     <property name="visible">True</property>
@@ -23,6 +24,12 @@
     <property name="stock">gtk-missing-image</property>
   </object>
   <object class="GtkImage" id="image13">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+    <property name="icon_size">0</property>
+  </object>
+  <object class="GtkImage" id="image14">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
@@ -62,12 +69,19 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
   </object>
+  <object class="GtkImage" id="image9">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+    <property name="icon_size">0</property>
+  </object>
   <object class="GtkApplicationWindow" id="tela_base">
     <property name="width_request">1024</property>
     <property name="height_request">768</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Farmácia Cotolengo</property>
     <property name="window_position">center</property>
+    <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
@@ -94,6 +108,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image3</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_nova_analise_prescricao_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -103,6 +118,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image4</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_abrir_analise_prescricao_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -142,6 +158,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image2</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_cadastro_morador_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -151,6 +168,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image5</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_cadastro_medicamento_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -173,6 +191,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image7</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_historico_analise_prescricao_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -182,6 +201,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image8</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_historico_cadastro_morador_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -191,6 +211,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image9</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_historico_cadastro_medicamento_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -200,6 +221,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image10</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_historico_opcoes_definicoes_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -209,6 +231,17 @@
                         <property name="can_focus">False</property>
                         <property name="image">image11</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_historico_opcoes_usuario_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="historico_gerenciamento_permissoes">
+                        <property name="label" translatable="yes">Autorização e Permissões de Usuários</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image14</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_historico_gerenciamento_permissoes_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -231,6 +264,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image1</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_opcoes_definicoes_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -240,6 +274,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image6</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_opcoes_meu_usuario_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -249,6 +284,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image12</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_opcoes_gerenciamento_permissoes_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -272,6 +308,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image13</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_ajuda_documentacao_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -281,6 +318,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_ajuda_sobre_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -307,7 +345,7 @@
             <property name="margin_bottom">20</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
-            <property name="pixbuf">logo_farmacia_cotolengo.png</property>
+            <property name="pixbuf">logo_farmacia_cotolengo.svg</property>
             <property name="icon_size">6</property>
           </object>
           <packing>
@@ -336,10 +374,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="image9">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
   </object>
 </interface>
