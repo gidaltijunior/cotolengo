@@ -3,7 +3,7 @@ from pymongo import errors
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-import base_module
+from base_module import ModuloBase
 from criar_usuario import CriarUsuario
 
 
@@ -71,6 +71,8 @@ class Login(object):
 
         if self.validacao_ok is True:
             self.tela_login.hide()
+            modulobase = ModuloBase()
+            print(modulobase)
             # NOVA JANELA VEM AQUI !!!!!!!!!!!!!!!!!!!!!!
         else:
             self.statusbar_login.push(self.statusbar_login.get_context_id('login'),

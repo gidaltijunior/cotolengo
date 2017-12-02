@@ -19,14 +19,14 @@ class CriarUsuario(object):
         self.email = builder.get_object('email')
         self.senha_criar = builder.get_object('senha_criar')
         self.senha_repetir = builder.get_object('senha_repetir')
-        self.cancelar = builder.get_object('cancelar')
+        self.fechar = builder.get_object('fechar')
         self.enviar_solicitacao = builder.get_object('enviar_solicitacao')
         self.statusbar_criar_usuario = builder.get_object('statusbar_criar_usuario')
         self.statusbar_login = builder.get_object('statusbar_login')
 
         self.usuarios_db = usuarios_db
 
-        builder.connect_signals({"on_cancelar_clicked": self.func_cancelar,
+        builder.connect_signals({"on_fechar_clicked": self.func_fechar,
                                  "on_enviar_solicitacao_clicked": self.func_enviar_solicitacao,
                                  "on_senha_criar_focus_out_event": self.func_comparar_senhas,
                                  "on_senha_repetir_focus_out_event": self.func_comparar_senhas})
@@ -35,11 +35,12 @@ class CriarUsuario(object):
 
         self.tela_criar_usuario.show_all()
 
-    def func_cancelar(self, widget):
-        print('func_cancelar', widget)
+    def func_fechar(self, widget):
+        print('func_fechar', widget)
         self.tela_criar_usuario.close()
 
     def func_enviar_solicitacao(self, widget):
+        print('func_enviar_soliciatacao', widget)
         cursor = self.usuarios_db.find({})
         for item in cursor:
             if item['usuario'] == self.nome_usuario.get_text():
@@ -55,18 +56,23 @@ class CriarUsuario(object):
                 "autorizado": False,
                 "senha": self.hash_password(self.senha_repetir.get_text())
             })
-            self.statusbar_login.push(self.statusbar_login.get_context_id('criar_usuario'),
-                                      'Solicitação de novo usuário criada. Aguarde aprovação.')
+            self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('criar_usuario'),
+                                              'Solicitação de novo usuário criada. Aguarde aprovação.')
             self.usuario_criado = True
-            self.func_cancelar(widget)
+            # self.func_fechar(widget)
 
-    def func_comparar_senhas(self, widget, focus): # compara se o campo senha e o campo repetir senha tem o mesmo valor
-        print(widget, focus, self.senha_criar.get_text(), self.senha_repetir.get_text())
-        if self.senha_criar.get_text() == self.senha_repetir.get_text():
+    def func_comparar_senhas(self, widget, focus):  # compara se o campo senha e o campo repetir senha tem o mesmo valor
+        print(widget, focus)
+        if self.senha_criar.get_text() == self.senha_repetir.get_text() \
+                and len(str(self.senha_repetir.get_text())) > 3 \
+                and len(str(self.nome_usuario.get_text())) > 3 \
+                and len(str(self.nome_completo.get_text())) > 3 \
+                and len(str(self.email.get_text())) > 3\
+                and str(self.email.get_text()).find('@') > 0:
             self.enviar_solicitacao.set_sensitive(True)
         else:
             self.enviar_solicitacao.set_sensitive(False)
 
     @staticmethod
-    def hash_password(password): # transforma a senha em um longo valor hexadecimal indecifrável
+    def hash_password(password):  # transforma a senha em um longo valor hexadecimal indecifrável
         return hashlib.sha256(str(password).encode()).hexdigest()
