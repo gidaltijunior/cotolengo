@@ -9,8 +9,7 @@ from gi.repository import Gtk
 
 class CriarUsuario(object):
 
-    def __init__(self, usuarios_db):
-        self.usuario_criado = False
+    def __init__(self, usuarios_db, definicoes_aplicativo):
         builder = Gtk.Builder()
         builder.add_from_file('tela_criar_usuario.glade')
         self.tela_criar_usuario = builder.get_object('tela_criar_usuario')
@@ -25,11 +24,16 @@ class CriarUsuario(object):
         self.statusbar_login = builder.get_object('statusbar_login')
 
         self.usuarios_db = usuarios_db
+        self.definicoes_aplicativo = definicoes_aplicativo
+        self.tentativas_conexao, self.politica_acesso_inicial = self.get_definicoes_aplicativo()
 
-        builder.connect_signals({"on_fechar_clicked": self.func_fechar,
-                                 "on_enviar_solicitacao_clicked": self.func_enviar_solicitacao,
-                                 "on_senha_criar_key_release_event": self.func_validar_formulario,
-                                 "on_senha_repetir_key_release_event": self.func_validar_formulario})
+        builder.connect_signals({'on_fechar_clicked': self.func_fechar,
+                                 'on_enviar_solicitacao_clicked': self.func_enviar_solicitacao,
+                                 'on_nome_completo_key_release_event': self.func_validar_formulario,
+                                 'on_nome_usuario_key_release_event': self.func_validar_formulario,
+                                 'on_email_key_release_event': self.func_validar_formulario,
+                                 'on_senha_criar_key_release_event': self.func_validar_formulario,
+                                 'on_senha_repetir_key_release_event': self.func_validar_formulario})
 
         self.enviar_solicitacao.set_sensitive(False)
 
@@ -40,27 +44,70 @@ class CriarUsuario(object):
         self.tela_criar_usuario.close()
 
     def func_enviar_solicitacao(self, widget):
-        print('func_enviar_soliciatacao', widget)
-        cursor = self.usuarios_db.find({})
-        for item in cursor:
-            if item['usuario'] == self.nome_usuario.get_text():
-                self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('criar_usuario'),
-                                                  'Nome de usuário já existente. Escolha outro.')
-                self.tela_criar_usuario.error_bell()
-                break
-        else:
-            self.usuarios_db.insert({
-                "usuario": str(self.nome_usuario.get_text()).lower(),
-                "nome": str(self.nome_completo.get_text()).title(),
-                "e-mail": str(self.email.get_text()).lower(),
-                "data_solicitacao": dt.datetime.utcnow(),
-                "autorizado": False,
-                "senha": self.hash_password(self.senha_repetir.get_text())
-            })
-            self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('criar_usuario'),
-                                              'Solicitação de novo usuário criada. Aguarde aprovação.')
-            self.usuario_criado = True
-            # self.func_fechar(widget)
+        print('func_enviar_solicitacao', widget)
+        for retries in range(self.tentativas_conexao):
+            try:
+
+                cursor = self.usuarios_db.find({})
+                for item in cursor:
+                    if item['usuario'] == self.nome_usuario.get_text():
+                        self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('criar_usuario'),
+                                                          'Nome de usuário já existente. Escolha outro.')
+                        self.tela_criar_usuario.error_bell()
+                        break
+                else:
+                    if self.politica_acesso_inicial == 'todos':
+                        self.usuarios_db.insert({
+                            'usuario': str(self.nome_usuario.get_text()).lower(),
+                            'nome': str(self.nome_completo.get_text()).title(),
+                            'e-mail': str(self.email.get_text()).lower(),
+                            'data_solicitacao': dt.datetime.utcnow(),
+                            'autorizado': False,
+                            'senha': self.hash_password(password=self.senha_repetir.get_text()),
+                            'permissoes':
+                                {'nova_analise_prescricao': True,
+                                 'abrir_analise_prescricao': True,
+                                 'cadastro_morador': True,
+                                 'cadastro_medicamento': True,
+                                 'historico_analise_prescricao': True,
+                                 'historico_cadastro_morador': True,
+                                 'historico_cadastro_medicamento': True,
+                                 'historico_opcoes_definicoes': True,
+                                 'historico_opcoes_usuario': True,
+                                 'historico_gerenciamento_permissoes': True,
+                                 'opcoes_definicoes': True,
+                                 'opcoes_meu_usuario': True,
+                                 'opcoes_gerenciamento_permissoes': True}
+                        })
+                    elif self.politica_acesso_inicial == 'nenhum':
+                        self.usuarios_db.insert({
+                            'usuario': str(self.nome_usuario.get_text()).lower(),
+                            'nome': str(self.nome_completo.get_text()).title(),
+                            'e-mail': str(self.email.get_text()).lower(),
+                            'data_solicitacao': dt.datetime.utcnow(),
+                            'autorizado': False,
+                            'senha': self.hash_password(password=self.senha_repetir.get_text()),
+                            'permissoes':
+                                {'nova_analise_prescricao': False,
+                                 'abrir_analise_prescricao': False,
+                                 'cadastro_morador': False,
+                                 'cadastro_medicamento': False,
+                                 'historico_analise_prescricao': False,
+                                 'historico_cadastro_morador': False,
+                                 'historico_cadastro_medicamento': False,
+                                 'historico_opcoes_definicoes': False,
+                                 'historico_opcoes_usuario': False,
+                                 'historico_gerenciamento_permissoes': False,
+                                 'opcoes_definicoes': False,
+                                 'opcoes_meu_usuario': False,
+                                 'opcoes_gerenciamento_permissoes': False}
+                        })
+                    self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('criar_usuario'),
+                                                      'Solicitação de novo usuário criada. Aguarde aprovação.')
+                    break
+            except errors.AutoReconnect:
+                self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('conexao_banco'),
+                                                  'Não foi possível estabelecer uma conexão com o banco de dados.')
 
     def func_validar_formulario(self, widget, focus):  # valida o formulario para habilitar o botao 'enviar solicitacao'
         print(widget, focus)
@@ -77,3 +124,13 @@ class CriarUsuario(object):
     @staticmethod
     def hash_password(password):  # transforma a senha em um longo valor hexadecimal indecifrável
         return hashlib.sha256(str(password).encode()).hexdigest()
+
+    def get_definicoes_aplicativo(self):
+        for retry in range(3):
+            try:
+                cursor = self.definicoes_aplicativo.find({})
+                for item in cursor:
+                    return item['politica_tentativas_conexao'], item['politica_acesso_inicial']
+            except errors.AutoReconnect:
+                self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('conexao_banco'),
+                                                  'Não foi possível estabelecer uma conexão com o banco de dados.')

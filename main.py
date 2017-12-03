@@ -25,5 +25,6 @@ from gi.repository import Gtk
 from login import Login
 
 if __name__ == "__main__":
+    usuario = None
     login = Login()
     Gtk.main()

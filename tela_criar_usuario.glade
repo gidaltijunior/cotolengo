@@ -149,6 +149,7 @@ Deve ter pelo menos 4 dígitos.</property>
             <property name="margin_bottom">5</property>
             <property name="hexpand">True</property>
             <property name="activates_default">True</property>
+            <signal name="key-release-event" handler="on_nome_completo_key_release_event" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -169,6 +170,7 @@ Deve ter pelo menos 4 dígitos.</property>
             <property name="margin_top">5</property>
             <property name="margin_bottom">5</property>
             <property name="hexpand">True</property>
+            <signal name="key-release-event" handler="on_nome_usuario_key_release_event" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -263,6 +265,7 @@ Deve ter pelo menos 4 dígitos e ter o símbolo @.</property>
             <property name="margin_bottom">5</property>
             <property name="hexpand">True</property>
             <property name="input_purpose">email</property>
+            <signal name="key-release-event" handler="on_email_key_release_event" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>
