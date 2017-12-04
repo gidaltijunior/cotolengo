@@ -128,9 +128,8 @@ class CriarUsuario(object):
     def get_definicoes_aplicativo(self):
         for retry in range(3):
             try:
-                cursor = self.definicoes_aplicativo.find({})
-                for item in cursor:
-                    return item['politica_tentativas_conexao'], item['politica_acesso_inicial']
+                item = self.definicoes_aplicativo.find_one({'_id': 0})
+                return item['politica_tentativas_conexao'], item['politica_acesso_inicial']
             except errors.AutoReconnect:
                 self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('conexao_banco'),
                                                   'Não foi possível estabelecer uma conexão com o banco de dados.')

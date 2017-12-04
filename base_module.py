@@ -34,9 +34,6 @@ class ModuloBase(object):
         self.opcoes_meu_usuario = builder.get_object('opcoes_meu_usuario')
         self.opcoes_gerenciamento_permissoes = builder.get_object('opcoes_gerenciamento_permissoes')
 
-        self.validar_permissoes()
-
-        # self.client, self.db, self.coll_usuarios = self.connect_db()
         builder.connect_signals({"gtk_main_quit": Gtk.main_quit,
                                  "on_nova_analise_prescricao_activate": self.func_abrir_tela_nova_analise_prescricao,
                                  "on_abrir_analise_prescricao_activate": self.func_abrir_tela_abrir_analise_prescricao,
@@ -63,6 +60,8 @@ class ModuloBase(object):
         self.statusbar_base.push(self.statusbar_base.get_context_id('info'), 'Bem-vindo(a) ' + usuario + '!')
 
         self.tela_base.show_all()
+
+        self.validar_permissoes()
 
     def func_analisa_permissoes(self, widget):
         pass
@@ -98,9 +97,8 @@ class ModuloBase(object):
         pass
 
     def func_abrir_tela_opcoes_definicoes(self, widget):
-        coll_definicoes_aplicativo = self.banco_dados['db'].definicoes_aplicativo
-        tela_definicoes_aplicativo = DefinicoesAplicativo(coll_definicoes_aplicativo=coll_definicoes_aplicativo)
-        print('tela_definicoes_aplicativo', tela_definicoes_aplicativo)
+        tela_definicoes_aplicativo = DefinicoesAplicativo(coll_definicoes_aplicativo=self.coll_definicoes_aplicativo)
+        print('tela_definicoes_aplicativo', tela_definicoes_aplicativo, widget)
 
     def func_abrir_tela_opcoes_meu_usuario(self, widget):
         pass
@@ -117,12 +115,8 @@ class ModuloBase(object):
 
     def validar_permissoes(self):
         coll_usuarios = self.banco_dados['db'].usuarios
-        coll_definicoes_aplicativo = self.banco_dados['db'].definicoes_aplicativo
-        cursor = coll_definicoes_aplicativo.find()
-        politica_modulos_sem_permissao = None
-        for item in cursor:
-            politica_modulos_sem_permissao = item['politica_modulos_sem_permissao']
-            break
+        item = self.coll_definicoes_aplicativo.find_one({'_id': 0})
+        politica_modulos_sem_permissao = item['politica_modulos_sem_permissao']
 
         usuario = coll_usuarios.find_one({'usuario': self.usuario})
         if politica_modulos_sem_permissao == 'desabilitados':
@@ -154,44 +148,44 @@ class ModuloBase(object):
                 self.opcoes_gerenciamento_permissoes.set_sensitive(False)
         elif politica_modulos_sem_permissao == 'removidos':
             if usuario['permissoes']['nova_analise_prescricao'] is False:
-                self.nova_analise_prescricao.destroy()
+                self.nova_analise_prescricao.hide()
             if usuario['permissoes']['abrir_analise_prescricao'] is False:
-                self.abrir_analise_prescricao.destroy()
+                self.abrir_analise_prescricao.hide()
             if usuario['permissoes']['cadastro_morador'] is False:
-                self.cadastro_morador.destroy()
+                self.cadastro_morador.hide()
             if usuario['permissoes']['cadastro_medicamento'] is False:
-                self.cadastro_medicamento.destroy()
+                self.cadastro_medicamento.hide()
             if usuario['permissoes']['historico_analise_prescricao'] is False:
-                self.historico_analise_prescricao.destroy()
+                self.historico_analise_prescricao.hide()
             if usuario['permissoes']['historico_cadastro_morador'] is False:
-                self.historico_cadastro_morador.destroy()
+                self.historico_cadastro_morador.hide()
             if usuario['permissoes']['historico_cadastro_medicamento'] is False:
-                self.historico_cadastro_medicamento.destroy()
+                self.historico_cadastro_medicamento.hide()
             if usuario['permissoes']['historico_opcoes_definicoes'] is False:
-                self.historico_opcoes_definicoes.destroy()
+                self.historico_opcoes_definicoes.hide()
             if usuario['permissoes']['historico_opcoes_usuario'] is False:
-                self.historico_opcoes_usuario.destroy()
+                self.historico_opcoes_usuario.hide()
             if usuario['permissoes']['historico_gerenciamento_permissoes'] is False:
-                self.historico_gerenciamento_permissoes.destroy()
+                self.historico_gerenciamento_permissoes.hide()
             if usuario['permissoes']['opcoes_definicoes'] is False:
-                self.opcoes_definicoes.destroy()
+                self.opcoes_definicoes.hide()
             if usuario['permissoes']['opcoes_meu_usuario'] is False:
-                self.opcoes_meu_usuario.destroy()
+                self.opcoes_meu_usuario.hide()
             if usuario['permissoes']['opcoes_gerenciamento_permissoes'] is False:
-                self.opcoes_gerenciamento_permissoes.destroy()
+                self.opcoes_gerenciamento_permissoes.hide()
         else:
-            self.nova_analise_prescricao.destroy()
-            self.abrir_analise_prescricao.destroy()
-            self.cadastro_morador.destroy()
-            self.cadastro_medicamento.destroy()
-            self.historico_analise_prescricao.destroy()
-            self.historico_cadastro_morador.destroy()
-            self.historico_cadastro_medicamento.destroy()
-            self.historico_opcoes_definicoes.destroy()
-            self.historico_opcoes_usuario.destroy()
-            self.historico_gerenciamento_permissoes.destroy()
-            self.opcoes_definicoes.destroy()
-            self.opcoes_meu_usuario.destroy()
-            self.opcoes_gerenciamento_permissoes.destroy()
+            self.nova_analise_prescricao.hide()
+            self.abrir_analise_prescricao.hide()
+            self.cadastro_morador.hide()
+            self.cadastro_medicamento.hide()
+            self.historico_analise_prescricao.hide()
+            self.historico_cadastro_morador.hide()
+            self.historico_cadastro_medicamento.hide()
+            self.historico_opcoes_definicoes.hide()
+            self.historico_opcoes_usuario.hide()
+            self.historico_gerenciamento_permissoes.hide()
+            self.opcoes_definicoes.hide()
+            self.opcoes_meu_usuario.hide()
+            self.opcoes_gerenciamento_permissoes.hide()
             self.statusbar_base.push(self.statusbar_base.get_context_id('permissoes'),
                                      'Não foi possível acessar as políticas de módulos sem permissão.')

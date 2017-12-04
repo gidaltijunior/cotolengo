@@ -98,6 +98,7 @@ class Login(object):
         quantidade_definicoes = self.coll_definicoes_aplicativo.find().count()
         if quantidade_definicoes == 0:
             self.coll_definicoes_aplicativo.insert({
+                '_id': 0,
                 'farmaceutico_responsavel': 'indefinido',
                 'politica_nome_farmaceutico': 'definido',
                 'politica_modulos_sem_permissao': 'desabilitados',
