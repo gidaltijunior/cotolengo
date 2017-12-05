@@ -14,15 +14,19 @@ class Login(object):
         builder = Gtk.Builder()
         builder.add_from_file('tela_login.glade')
         self.tela_login = builder.get_object('tela_login')
+        self.grid_login = builder.get_object('grid_login')
         self.usuario = builder.get_object('usuario')
         self.senha = builder.get_object('senha')
         self.logar = builder.get_object('logar')
         self.criar_usuario = builder.get_object('criar_usuario')
         self.statusbar_login = builder.get_object('statusbar_login')
 
+        # Setando o 'tab sequence' da tela. Deve ser feito com o container. Nesse caso: o grid.
+        self.grid_login.set_focus_chain([self.usuario, self.senha, self.logar, self.criar_usuario])
+
         self.banco_dados, self.coll_usuarios, self.coll_definicoes_aplicativo = self.connect_db()
 
-        self.check_definicoes_aplicativo()
+        self.politica_tentativas_conexao, self.politica_acesso_inicial = self.check_definicoes_aplicativo()
 
         builder.connect_signals({"gtk_main_quit": Gtk.main_quit,
                                  "on_criar_usuario_clicked": self.func_criar_usuario,
@@ -47,7 +51,7 @@ class Login(object):
                 self.logar.set_sensitive(False)
                 self.criar_usuario.set_sensitive(False)
                 self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
-                                          'Conexão com banco de dados falhou.')
+                                          'Conexão com banco de dados falhou. Verifique.')
                 print('Banco de Dados não está disponível. Tentando novamente:', retries)
                 self.tela_login.error_bell()
         banco_dados = {'client': client, 'db': db}
@@ -56,12 +60,25 @@ class Login(object):
     def func_criar_usuario(self, widget):
         print('func_criar_usuario', widget)
         tela_criar_usuario = CriarUsuario(usuarios_db=self.coll_usuarios,
-                                          definicoes_aplicativo=self.coll_definicoes_aplicativo)
+                                          definicoes_aplicativo=self.coll_definicoes_aplicativo,
+                                          politica_tentativas_conexao=self.politica_tentativas_conexao,
+                                          politica_acesso_inicial=self.politica_acesso_inicial)
         print('tela_criar_usuario', tela_criar_usuario)
 
     def func_logar(self, widget):
         print('func_logar', widget)
-        item = self.coll_usuarios.find_one({'usuario': str(self.usuario.get_text()).lower()})
+
+        for retries in range(self.politica_tentativas_conexao):
+            try:
+                item = self.coll_usuarios.find_one({'usuario': str(self.usuario.get_text()).lower()})
+                break
+            except errors.AutoReconnect:
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
+                                      'Conexão com banco de dados falhou. Verifique.')
+            return
+
         if item is not None:
             if item['autorizado'] is True:
                 new_hash = CriarUsuario.hash_password(self.senha.get_text())
@@ -80,7 +97,9 @@ class Login(object):
         if self.validacao_ok is True:
             self.tela_login.hide()
             usuario = str(self.usuario.get_text()).lower()
-            modulobase = ModuloBase(banco_dados=self.banco_dados, usuario=usuario)
+            modulobase = ModuloBase(banco_dados=self.banco_dados,
+                                    usuario=usuario,
+                                    politica_tentativas_conexao=self.politica_tentativas_conexao)
             print(modulobase)
         else:
             self.statusbar_login.push(self.statusbar_login.get_context_id('login'),
@@ -105,3 +124,6 @@ class Login(object):
                 'politica_acesso_inicial': 'todos',
                 'politica_tentativas_conexao': 3
             })
+            return 3, 'todos'
+        item = self.coll_definicoes_aplicativo.find_one({'_id': 0})
+        return item['politica_tentativas_conexao'], item['politica_acesso_inicial']

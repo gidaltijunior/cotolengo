@@ -9,10 +9,11 @@ from gi.repository import Gtk
 
 class CriarUsuario(object):
 
-    def __init__(self, usuarios_db, definicoes_aplicativo):
+    def __init__(self, usuarios_db, definicoes_aplicativo, politica_tentativas_conexao, politica_acesso_inicial):
         builder = Gtk.Builder()
         builder.add_from_file('tela_criar_usuario.glade')
         self.tela_criar_usuario = builder.get_object('tela_criar_usuario')
+        self.grid_criar_usuario = builder.get_object('grid_criar_usuario')
         self.nome_completo = builder.get_object('nome_completo')
         self.nome_usuario = builder.get_object('nome_usuario')
         self.email = builder.get_object('email')
@@ -25,7 +26,12 @@ class CriarUsuario(object):
 
         self.usuarios_db = usuarios_db
         self.definicoes_aplicativo = definicoes_aplicativo
-        self.tentativas_conexao, self.politica_acesso_inicial = self.get_definicoes_aplicativo()
+        self.politica_tentativas_conexao = politica_tentativas_conexao
+        self.politica_acesso_inicial = politica_acesso_inicial
+
+        # tab sequence:
+        self.grid_criar_usuario.set_focus_chain([self.nome_completo, self.nome_usuario, self.email, self.senha_criar,
+                                                 self.senha_repetir, self.enviar_solicitacao, self.fechar])
 
         builder.connect_signals({'on_fechar_clicked': self.func_fechar,
                                  'on_enviar_solicitacao_clicked': self.func_enviar_solicitacao,
@@ -45,7 +51,7 @@ class CriarUsuario(object):
 
     def func_enviar_solicitacao(self, widget):
         print('func_enviar_solicitacao', widget)
-        for retries in range(self.tentativas_conexao):
+        for retries in range(self.politica_tentativas_conexao):
             try:
 
                 cursor = self.usuarios_db.find({})
@@ -67,6 +73,10 @@ class CriarUsuario(object):
                             'permissoes':
                                 {'nova_analise_prescricao': True,
                                  'abrir_analise_prescricao': True,
+                                 'abrir_intervencoes': True,
+                                 'abrir_esclarecimentos': True,
+                                 'dados_por_lar': True,
+                                 'dados_totais': True,
                                  'cadastro_morador': True,
                                  'cadastro_medicamento': True,
                                  'historico_analise_prescricao': True,
@@ -75,6 +85,8 @@ class CriarUsuario(object):
                                  'historico_opcoes_definicoes': True,
                                  'historico_opcoes_usuario': True,
                                  'historico_gerenciamento_permissoes': True,
+                                 'historico_intervencoes': True,
+                                 'historico_esclarecimentos': True,
                                  'opcoes_definicoes': True,
                                  'opcoes_meu_usuario': True,
                                  'opcoes_gerenciamento_permissoes': True}
@@ -90,6 +102,10 @@ class CriarUsuario(object):
                             'permissoes':
                                 {'nova_analise_prescricao': False,
                                  'abrir_analise_prescricao': False,
+                                 'abrir_intervencoes': False,
+                                 'abrir_esclarecimentos': False,
+                                 'dados_por_lar': False,
+                                 'dados_totais': False,
                                  'cadastro_morador': False,
                                  'cadastro_medicamento': False,
                                  'historico_analise_prescricao': False,
@@ -98,6 +114,8 @@ class CriarUsuario(object):
                                  'historico_opcoes_definicoes': False,
                                  'historico_opcoes_usuario': False,
                                  'historico_gerenciamento_permissoes': False,
+                                 'historico_intervencoes': False,
+                                 'historico_esclarecimentos': False,
                                  'opcoes_definicoes': False,
                                  'opcoes_meu_usuario': False,
                                  'opcoes_gerenciamento_permissoes': False}
@@ -106,8 +124,10 @@ class CriarUsuario(object):
                                                       'Solicitação de novo usuário criada. Aguarde aprovação.')
                     break
             except errors.AutoReconnect:
-                self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('conexao_banco'),
-                                                  'Não foi possível estabelecer uma conexão com o banco de dados.')
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('conexao_banco'),
+                                              'Não foi possível estabelecer uma conexão com o banco de dados.')
 
     def func_validar_formulario(self, widget, focus):  # valida o formulario para habilitar o botao 'enviar solicitacao'
         print(widget, focus)
@@ -124,12 +144,3 @@ class CriarUsuario(object):
     @staticmethod
     def hash_password(password):  # transforma a senha em um longo valor hexadecimal indecifrável
         return hashlib.sha256(str(password).encode()).hexdigest()
-
-    def get_definicoes_aplicativo(self):
-        for retry in range(3):
-            try:
-                item = self.definicoes_aplicativo.find_one({'_id': 0})
-                return item['politica_tentativas_conexao'], item['politica_acesso_inicial']
-            except errors.AutoReconnect:
-                self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('conexao_banco'),
-                                                  'Não foi possível estabelecer uma conexão com o banco de dados.')

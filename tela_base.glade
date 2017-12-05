@@ -34,7 +34,37 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
   </object>
+  <object class="GtkImage" id="image15">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image16">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image17">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image18">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image19">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
   <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image20">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-missing-image</property>
@@ -114,12 +144,32 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="abrir_analise_prescricao">
-                        <property name="label" translatable="yes">Abrir Análise da Prescrição</property>
+                        <property name="label" translatable="yes">Abrir Análises de Prescrições</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="image">image4</property>
                         <property name="use_stock">False</property>
                         <signal name="activate" handler="on_abrir_analise_prescricao_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="abrir_intervencoes">
+                        <property name="label" translatable="yes">Abrir Intervenções</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image15</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_abrir_intervencoes_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="abrir_esclarecimentos">
+                        <property name="label" translatable="yes">Abrir Esclarecimentos</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image16</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_abrir_esclarecimentos_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -136,6 +186,40 @@
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="gtk_main_quit" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="visualizar">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">_Visualizar</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu_visualizar">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="dados_por_lar">
+                        <property name="label" translatable="yes">Dados por Lar</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image17</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_dados_por_lar_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="dados_totais">
+                        <property name="label" translatable="yes">Dados Totais</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image18</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_dados_totais_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -180,7 +264,8 @@
               <object class="GtkMenuItem" id="historico">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Histórico</property>
+                <property name="label" translatable="yes">_Histórico</property>
+                <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu_historico">
                     <property name="visible">True</property>
@@ -245,6 +330,26 @@
                         <signal name="activate" handler="on_historico_gerenciamento_permissoes_activate" swapped="no"/>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="historico_intervencoes">
+                        <property name="label" translatable="yes">Intervenções</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image19</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_historico_intervencoes_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="historico_esclarecimentos">
+                        <property name="label" translatable="yes">Esclarecimentos</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image20</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_historico_esclarecimentos_activate" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -253,7 +358,8 @@
               <object class="GtkMenuItem" id="opcoes">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Opções</property>
+                <property name="label" translatable="yes">_Opções</property>
+                <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu_opcoes">
                     <property name="visible">True</property>
