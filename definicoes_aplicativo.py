@@ -2,6 +2,7 @@ import pymongo
 from pymongo import errors
 import hashlib
 import datetime as dt
+import time
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -9,9 +10,11 @@ from gi.repository import Gtk
 
 class DefinicoesAplicativo(object):
 
-    def __init__(self, coll_definicoes_aplicativo):
+    def __init__(self, banco_dados):
 
-        self.coll_definicoes_aplicativo = coll_definicoes_aplicativo
+        self.banco_dados = banco_dados
+        self.coll_definicoes_aplicativo = self.banco_dados['db'].definicoes_aplicativo
+        self.coll_valores_intervencao = self.banco_dados['db'].valores_intervencao
 
         builder = Gtk.Builder()
         builder.add_from_file('tela_definicoes_aplicativo.glade')
@@ -24,10 +27,20 @@ class DefinicoesAplicativo(object):
         self.politica_acesso_inicial_todos = builder.get_object('politica_acesso_inicial1')
         self.politica_acesso_inicial_nenhum = builder.get_object('politica_acesso_inicial2')
         self.politica_tentativas_conexao = builder.get_object('politica_tentativas_conexao_bd_spin')
+
+        self.entrada_intervencao = builder.get_object('entrada_intervencao')
+        self.lista_intervencao = builder.get_object('lista_intervencao')
+        self.armazenamento_intervencao = builder.get_object('armazenamento_intervencao')
+        self.coluna_intervencao = Gtk.TreeViewColumn('Intervenção', Gtk.CellRendererText(), text=0)
+        self.coluna_intervencao.set_sort_column_id(0)
+        self.lista_intervencao.append_column(self.coluna_intervencao)
+
         self.salvar_e_fechar = builder.get_object('salvar_e_fechar')
         self.statusbar_definicoes_aplicativo = builder.get_object('statusbar_definicoes_aplicativo')
 
-        builder.connect_signals({'on_salvar_e_fechar_clicked': self.salvar_definicoes_e_fechar})
+        builder.connect_signals({'on_salvar_e_fechar_clicked': self.salvar_definicoes_e_fechar,
+                                 'on_adicionar_intervencao_clicked': self.adicionar_valores_intervencao,
+                                 'on_remover_intervencao_clicked': self.remover_valores_intervencao})
 
         self.carregar_definicoes()
 
@@ -63,6 +76,43 @@ class DefinicoesAplicativo(object):
             self.politica_acesso_inicial_nenhum.set_active(True)
 
         self.politica_tentativas_conexao.set_text(str(politica_tentativas_conexao))
+
+        self.carregar_valores_intervencao()
+
+    def carregar_valores_intervencao(self):
+        self.armazenamento_intervencao.clear()
+        valores = self.coll_valores_intervencao.find({})
+        for valor in valores:
+            self.armazenamento_intervencao.append([valor['valor']])
+
+    def adicionar_valores_intervencao(self, widget):
+        print('adicionar_valores_intervencao', widget)
+        if len(str(self.entrada_intervencao.get_text()).strip()) > 0:
+            valor = self.entrada_intervencao.get_text()
+            self.coll_valores_intervencao.insert({'valor': valor})
+            self.entrada_intervencao.set_text('')
+            for i in range(3):
+                time.sleep(1)
+            self.carregar_valores_intervencao()
+        else:
+            self.statusbar_definicoes_aplicativo.push(
+                self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
+                'O campo de entrada da intervenção deve ser preenchido antes de ser adicionado à tabela.')
+
+    def remover_valores_intervencao(self, widget):
+        print('remover_valores_intervencao', widget)
+        selecao = self.lista_intervencao.get_selection()
+        modelo, iteracao = selecao.get_selected()
+        if iteracao is not None:
+            valor = modelo.get_value(iteracao, 0)
+            self.coll_valores_intervencao.delete_one({'valor': valor})
+            for i in range(3):
+                time.sleep(1)
+            self.carregar_valores_intervencao()
+        else:
+            self.statusbar_definicoes_aplicativo.push(
+                self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
+                'Um item de intervenção deve ser selecionado antes de ser removido.')
 
     def salvar_definicoes_e_fechar(self, widget):
         print('salvar_definicoes_e_fechar', widget)

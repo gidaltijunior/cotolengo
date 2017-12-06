@@ -129,7 +129,7 @@ class ModuloBase(object):
         pass
 
     def func_abrir_tela_opcoes_definicoes(self, widget):
-        tela_definicoes_aplicativo = DefinicoesAplicativo(coll_definicoes_aplicativo=self.coll_definicoes_aplicativo)
+        tela_definicoes_aplicativo = DefinicoesAplicativo(banco_dados=self.banco_dados)
         print('tela_definicoes_aplicativo', tela_definicoes_aplicativo, widget)
 
     def func_abrir_tela_opcoes_meu_usuario(self, widget):
