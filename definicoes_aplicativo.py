@@ -17,6 +17,9 @@ class DefinicoesAplicativo(object):
         self.coll_valores_intervencao = self.banco_dados['db'].valores_intervencao
         self.coll_valores_prescritor = self.banco_dados['db'].valores_prescritor
         self.coll_valores_evolucao = self.banco_dados['db'].valores_evolucao
+        self.coll_valores_alvo_intervencao = self.banco_dados['db'].valores_alvo_intervencao
+        self.coll_valores_ponto_critico = self.banco_dados['db'].valores_ponto_critico
+        self.coll_valores_acatamento = self.banco_dados['db'].valores_acatamento
 
         builder = Gtk.Builder()
         builder.add_from_file('tela_definicoes_aplicativo.glade')
@@ -51,16 +54,70 @@ class DefinicoesAplicativo(object):
         self.coluna_evolucao.set_sort_column_id(0)
         self.lista_evolucao.append_column(self.coluna_evolucao)
 
+        self.entrada_alvo_intervencao = builder.get_object('entrada_alvo_intervencao')
+        self.lista_alvo_intervencao = builder.get_object('lista_alvo_intervencao')
+        self.armazenamento_alvo_intervencao = builder.get_object('armazenamento_alvo_intervencao')
+        self.coluna_alvo_intervencao = Gtk.TreeViewColumn('Evolução', Gtk.CellRendererText(), text=0)
+        self.coluna_alvo_intervencao.set_sort_column_id(0)
+        self.lista_alvo_intervencao.append_column(self.coluna_alvo_intervencao)
+
+        self.entrada_ponto_critico = builder.get_object('entrada_ponto_critico')
+        self.lista_ponto_critico = builder.get_object('lista_ponto_critico')
+        self.armazenamento_ponto_critico = builder.get_object('armazenamento_ponto_critico')
+        self.coluna_ponto_critico = Gtk.TreeViewColumn('Evolução', Gtk.CellRendererText(), text=0)
+        self.coluna_ponto_critico.set_sort_column_id(0)
+        self.lista_ponto_critico.append_column(self.coluna_ponto_critico)
+
+        self.entrada_acatamento = builder.get_object('entrada_acatamento')
+        self.lista_acatamento = builder.get_object('lista_acatamento')
+        self.armazenamento_acatamento = builder.get_object('armazenamento_acatamento')
+        self.coluna_acatamento = Gtk.TreeViewColumn('Evolução', Gtk.CellRendererText(), text=0)
+        self.coluna_acatamento.set_sort_column_id(0)
+        self.lista_acatamento.append_column(self.coluna_acatamento)
+
         self.salvar_e_fechar = builder.get_object('salvar_e_fechar')
         self.statusbar_definicoes_aplicativo = builder.get_object('statusbar_definicoes_aplicativo')
 
         builder.connect_signals({'on_salvar_e_fechar_clicked': self.salvar_definicoes_e_fechar,
-                                 'on_adicionar_intervencao_clicked': self.adicionar_valores_intervencao,
-                                 'on_remover_intervencao_clicked': self.remover_valores_intervencao,
-                                 'on_adicionar_prescritor_clicked': self.adicionar_valores_prescritor,
-                                 'on_remover_prescritor_clicked': self.remover_valores_prescritor,
-                                 'on_adicionar_evolucao_clicked': self.adicionar_valores_evolucao,
-                                 'on_remover_evolucao_clicked': self.remover_valores_evolucao
+                                 'on_adicionar_intervencao_clicked':
+                                     (self.adicionar_valores, self.entrada_intervencao, self.coll_valores_intervencao,
+                                      self.armazenamento_intervencao, 'intervenção'),
+                                 'on_remover_intervencao_clicked':
+                                     (self.remover_valores, self.lista_intervencao, self.coll_valores_intervencao,
+                                      self.armazenamento_intervencao, 'intervenção'),
+                                 'on_adicionar_prescritor_clicked':
+                                     (self.adicionar_valores, self.entrada_prescritor, self.coll_valores_prescritor,
+                                      self.armazenamento_prescritor, 'prescritor'),
+                                 'on_remover_prescritor_clicked':
+                                     (self.remover_valores, self.lista_prescritor, self.coll_valores_prescritor,
+                                      self.armazenamento_prescritor, 'prescritor'),
+                                 'on_adicionar_evolucao_clicked':
+                                     (self.adicionar_valores, self.entrada_evolucao, self.coll_valores_evolucao,
+                                      self.armazenamento_evolucao, 'evolução'),
+                                 'on_remover_evolucao_clicked':
+                                     (self.remover_valores, self.lista_evolucao, self.coll_valores_evolucao,
+                                      self.armazenamento_evolucao, 'evolução'),
+                                 'on_adicionar_alvo_intervencao_clicked':
+                                     (self.adicionar_valores, self.entrada_alvo_intervencao,
+                                      self.coll_valores_alvo_intervencao, self.armazenamento_alvo_intervencao,
+                                      'alvo da intervenção'),
+                                 'on_remover_alvo_intervencao_clicked':
+                                     (self.remover_valores, self.lista_alvo_intervencao,
+                                      self.coll_valores_alvo_intervencao, self.armazenamento_alvo_intervencao,
+                                      'alvo da intervenção'),
+                                 'on_adicionar_ponto_critico_clicked':
+                                     (self.adicionar_valores, self.entrada_ponto_critico,
+                                      self.coll_valores_ponto_critico, self.armazenamento_ponto_critico,
+                                      'ponto crítico'),
+                                 'on_remover_ponto_critico_clicked':
+                                     (self.remover_valores, self.lista_ponto_critico, self.coll_valores_ponto_critico,
+                                      self.armazenamento_ponto_critico, 'ponto crítico'),
+                                 'on_adicionar_acatamento_clicked':
+                                     (self.adicionar_valores, self.entrada_acatamento, self.coll_valores_acatamento,
+                                      self.armazenamento_acatamento, 'acatamento'),
+                                 'on_remover_acatamento_clicked':
+                                     (self.remover_valores, self.lista_acatamento, self.coll_valores_acatamento,
+                                      self.armazenamento_acatamento, 'acatamento')
                                  })
 
         self.carregar_definicoes()
@@ -98,150 +155,61 @@ class DefinicoesAplicativo(object):
 
         self.politica_tentativas_conexao.set_text(str(politica_tentativas_conexao))
 
-        self.carregar_valores_intervencao()
-        self.carregar_valores_prescritor()
-        self.carregar_valores_evolucao()
+        self.carregar_valores(self.armazenamento_intervencao, self.coll_valores_intervencao)
+        self.carregar_valores(self.armazenamento_prescritor, self.coll_valores_prescritor)
+        self.carregar_valores(self.armazenamento_evolucao, self.coll_valores_evolucao)
+        self.carregar_valores(self.armazenamento_alvo_intervencao, self.coll_valores_alvo_intervencao)
+        self.carregar_valores(self.armazenamento_ponto_critico, self.coll_valores_ponto_critico)
+        self.carregar_valores(self.armazenamento_acatamento, self.coll_valores_acatamento)
 
-    def carregar_valores_intervencao(self):
-        self.armazenamento_intervencao.clear()
-        valores = self.coll_valores_intervencao.find({})
+    @staticmethod
+    def carregar_valores(armazenamento, colecao):
+        armazenamento.clear()
+        valores = colecao.find({})
         for valor in valores:
-            self.armazenamento_intervencao.append([valor['valor']])
+            armazenamento.append([valor['valor']])
 
-    def adicionar_valores_intervencao(self, widget):
-        print('adicionar_valores_intervencao', widget)
-        if len(str(self.entrada_intervencao.get_text()).strip()) > 0:
-            valor = self.entrada_intervencao.get_text()
-            objectid_id = self.coll_valores_intervencao.insert_one({'valor': valor}).inserted_id
-            self.entrada_intervencao.set_text('')
+    def adicionar_valores(self, widget, entrada, colecao, armazenamento, nome_tabela_formatado):
+        print('adicionar_valores', nome_tabela_formatado, widget)
+        if len(str(entrada.get_text()).strip()) > 0:
+            valor = entrada.get_text()
+            objectid_id = colecao.insert_one({'valor': valor}).inserted_id
+            entrada.set_text('')
             encontrado = None  # para testar abaixo a adição no banco de dados
             tentativas = 0
             while encontrado is not None and tentativas < self.timeout:
-                encontrado = self.coll_valores_intervencao.find_one({'_id': objectid.ObjectId(objectid_id)})
+                encontrado = colecao.find_one({'_id': objectid.ObjectId(objectid_id)})
                 time.sleep(1)
                 tentativas += 1
-            self.carregar_valores_intervencao()
+            self.carregar_valores(armazenamento, colecao)
             self.statusbar_definicoes_aplicativo.push(
                 self.statusbar_definicoes_aplicativo.get_context_id('adicionado'),
-                'O item \'{0}\' foi adicionado a intervenção com sucesso.'.format(valor))
+                'O item \'{0}\' foi adicionado à tabela {1} com sucesso.'.format(valor, nome_tabela_formatado))
         else:
             self.statusbar_definicoes_aplicativo.push(
                 self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
-                'O campo de entrada da intervenção deve ser preenchido antes de ser adicionado à tabela.')
+                'O campo de entrada da tabela {0} deve ser preenchido antes de'
+                ' ser adicionado à tabela.'.format(nome_tabela_formatado))
 
-    def remover_valores_intervencao(self, widget):
-        print('remover_valores_intervencao', widget)
-        selecao = self.lista_intervencao.get_selection()
+    def remover_valores(self, widget, lista, colecao, armazenamento, nome_tabela_formatado):
+        print('remover_valores', nome_tabela_formatado, widget)
+        selecao = lista.get_selection()
         modelo, iteracao = selecao.get_selected()
         if iteracao is not None:
             valor = modelo.get_value(iteracao, 0)
-            deletados = self.coll_valores_intervencao.delete_one({'valor': valor}).deleted_count
+            deletados = colecao.delete_one({'valor': valor}).deleted_count
             tentativas = 0
             while deletados != 1 and tentativas < self.timeout:
                 time.sleep(1)
                 tentativas += 1
-            self.carregar_valores_intervencao()
+            self.carregar_valores(armazenamento, colecao)
             self.statusbar_definicoes_aplicativo.push(
                 self.statusbar_definicoes_aplicativo.get_context_id('removido'),
-                'O item \'{0}\' foi removido de intervenção com sucesso.'.format(valor))
+                'O item \'{0}\' foi removido da tabela {1} com sucesso.'.format(valor, nome_tabela_formatado))
         else:
             self.statusbar_definicoes_aplicativo.push(
                 self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
-                'Um item de intervenção deve ser selecionado antes de ser removido.')
-
-    def carregar_valores_prescritor(self):
-        self.armazenamento_prescritor.clear()
-        valores = self.coll_valores_prescritor.find({})
-        for valor in valores:
-            self.armazenamento_prescritor.append([valor['valor']])
-
-    def adicionar_valores_prescritor(self, widget):
-        print('adicionar_valores_prescritor', widget)
-        if len(str(self.entrada_prescritor.get_text()).strip()) > 0:
-            valor = self.entrada_prescritor.get_text()
-            objectid_id = self.coll_valores_prescritor.insert_one({'valor': valor}).inserted_id
-            self.entrada_prescritor.set_text('')
-            encontrado = None  # para testar abaixo a adição no banco de dados
-            tentativas = 0
-            while encontrado is not None and tentativas < self.timeout:
-                encontrado = self.coll_valores_prescritor.find_one({'_id': objectid.ObjectId(objectid_id)})
-                time.sleep(1)
-                tentativas += 1
-            self.carregar_valores_prescritor()
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('adicionado'),
-                'O item \'{0}\' foi adicionado a prescritor com sucesso.'.format(valor))
-        else:
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
-                'O campo de entrada do prescritor deve ser preenchido antes de ser adicionado à tabela.')
-
-    def remover_valores_prescritor(self, widget):
-        print('remover_valores_prescritor', widget)
-        selecao = self.lista_prescritor.get_selection()
-        modelo, iteracao = selecao.get_selected()
-        if iteracao is not None:
-            valor = modelo.get_value(iteracao, 0)
-            deletados = self.coll_valores_prescritor.delete_one({'valor': valor}).deleted_count
-            tentativas = 0
-            while deletados != 1 and tentativas < self.timeout:
-                time.sleep(1)
-                tentativas += 1
-            self.carregar_valores_prescritor()
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('removido'),
-                'O item \'{0}\' foi removido de prescritor com sucesso.'.format(valor))
-        else:
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
-                'Um item de prescritor deve ser selecionado antes de ser removido.')
-            
-    def carregar_valores_evolucao(self):
-        self.armazenamento_evolucao.clear()
-        valores = self.coll_valores_evolucao.find({})
-        for valor in valores:
-            self.armazenamento_evolucao.append([valor['valor']])
-
-    def adicionar_valores_evolucao(self, widget):
-        print('adicionar_valores_evolucao', widget)
-        if len(str(self.entrada_evolucao.get_text()).strip()) > 0:
-            valor = self.entrada_evolucao.get_text()
-            objectid_id = self.coll_valores_evolucao.insert_one({'valor': valor}).inserted_id
-            self.entrada_evolucao.set_text('')
-            encontrado = None  # para testar abaixo a adição no banco de dados
-            tentativas = 0
-            while encontrado is not None and tentativas < self.timeout:
-                encontrado = self.coll_valores_evolucao.find_one({'_id': objectid.ObjectId(objectid_id)})
-                time.sleep(1)
-                tentativas += 1
-            self.carregar_valores_evolucao()
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('adicionado'),
-                'O item \'{0}\' foi adicionado a evolução com sucesso.'.format(valor))
-        else:
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
-                'O campo de entrada da evolução deve ser preenchido antes de ser adicionado à tabela.')
-
-    def remover_valores_evolucao(self, widget):
-        print('remover_valores_evolucao', widget)
-        selecao = self.lista_evolucao.get_selection()
-        modelo, iteracao = selecao.get_selected()
-        if iteracao is not None:
-            valor = modelo.get_value(iteracao, 0)
-            deletados = self.coll_valores_evolucao.delete_one({'valor': valor}).deleted_count
-            tentativas = 0
-            while deletados != 1 and tentativas < self.timeout:
-                time.sleep(1)
-                tentativas += 1
-            self.carregar_valores_evolucao()
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('removido'),
-                'O item \'{0}\' foi removido de evolução com sucesso.'.format(valor))
-        else:
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
-                'Um item de evolução deve ser selecionado antes de ser removido.')
+                'Um item da tabela {0} deve ser selecionado antes de ser removido.'.format(nome_tabela_formatado))
 
     def salvar_definicoes_e_fechar(self, widget):
         print('salvar_definicoes_e_fechar', widget)
