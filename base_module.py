@@ -1,20 +1,20 @@
-import pymongo
 from pymongo import errors
-import bson
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from tela_sobre import Sobre
 from definicoes_aplicativo import DefinicoesAplicativo
+from meu_usuario import MeuUsuario
 
 
 class ModuloBase(object):
 
-    def __init__(self, banco_dados, usuario, politica_tentativas_conexao):
+    def __init__(self, banco_dados, usuario, politica_tentativas_conexao, hspw):
         self.banco_dados = banco_dados
         self.usuario = usuario
         self.politica_tentativas_conexao = politica_tentativas_conexao
         self.coll_definicoes_aplicativo = banco_dados['db'].definicoes_aplicativo
+        self.hspw = hspw
 
         builder = Gtk.Builder()
         builder.add_from_file('tela_base.glade')
@@ -129,11 +129,15 @@ class ModuloBase(object):
         pass
 
     def func_abrir_tela_opcoes_definicoes(self, widget):
-        tela_definicoes_aplicativo = DefinicoesAplicativo(banco_dados=self.banco_dados)
+        tela_definicoes_aplicativo = DefinicoesAplicativo(banco_dados=self.banco_dados,
+                                                          politica_tentativas_conexao=self.politica_tentativas_conexao)
         print('tela_definicoes_aplicativo', tela_definicoes_aplicativo, widget)
 
     def func_abrir_tela_opcoes_meu_usuario(self, widget):
-        pass
+        tela_meu_usuario = MeuUsuario(banco_dados=self.banco_dados,
+                                      politica_tentativas_conexao=self.politica_tentativas_conexao,
+                                      usuario=self.usuario)
+        print('tela_definicoes_aplicativo', tela_meu_usuario, widget)
 
     def func_abrir_tela_opcoes_gerenciamento_permissoes(self, widget):
         pass
@@ -153,6 +157,7 @@ class ModuloBase(object):
                 politica_modulos_sem_permissao = item['politica_modulos_sem_permissao']
 
                 usuario = coll_usuarios.find_one({'usuario': self.usuario})
+
                 if politica_modulos_sem_permissao == 'desabilitados':
                     if usuario['permissoes']['nova_analise_prescricao'] is False:
                         self.nova_analise_prescricao.set_sensitive(False)
@@ -192,6 +197,7 @@ class ModuloBase(object):
                         self.opcoes_meu_usuario.set_sensitive(False)
                     if usuario['permissoes']['opcoes_gerenciamento_permissoes'] is False:
                         self.opcoes_gerenciamento_permissoes.set_sensitive(False)
+
                 elif politica_modulos_sem_permissao == 'removidos':
                     if usuario['permissoes']['nova_analise_prescricao'] is False:
                         self.nova_analise_prescricao.hide()
@@ -231,6 +237,7 @@ class ModuloBase(object):
                         self.opcoes_meu_usuario.hide()
                     if usuario['permissoes']['opcoes_gerenciamento_permissoes'] is False:
                         self.opcoes_gerenciamento_permissoes.hide()
+
                 else:
                     self.nova_analise_prescricao.hide()
                     self.abrir_analise_prescricao.hide()
@@ -258,4 +265,4 @@ class ModuloBase(object):
                 print('Tentando reconectar ao banco de dados.')
         else:
             self.statusbar_base.push(self.statusbar_base.get_context_id('db_status'),
-                                     'Conexão com banco de dados falhou. Verifique.')
+                                     'Não foi possível estabelecer uma conexão com o banco de dados.')

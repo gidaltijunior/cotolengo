@@ -46,8 +46,8 @@
     </columns>
   </object>
   <object class="GtkWindow" id="tela_definicoes_aplicativo">
-    <property name="width_request">800</property>
-    <property name="height_request">600</property>
+    <property name="width_request">1024</property>
+    <property name="height_request">768</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Definições do Aplicativo</property>
     <property name="window_position">center</property>
@@ -61,6 +61,10 @@
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">10</property>
+            <property name="margin_top">10</property>
+            <property name="margin_bottom">5</property>
             <property name="label" translatable="yes">Definições do Aplicativo</property>
             <attributes>
               <attribute name="scale" value="2"/>
@@ -76,6 +80,10 @@
           <object class="GtkLabel" id="label2">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">10</property>
+            <property name="margin_top">5</property>
+            <property name="margin_bottom">5</property>
             <property name="label" translatable="yes">Defina vários comportamentos do aplicativo de forma global.</property>
           </object>
           <packing>

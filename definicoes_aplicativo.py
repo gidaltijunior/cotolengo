@@ -9,9 +9,10 @@ from gi.repository import Gtk
 
 class DefinicoesAplicativo(object):
 
-    def __init__(self, banco_dados):
+    def __init__(self, banco_dados, politica_tentativas_conexao):
 
         self.banco_dados = banco_dados
+        self.politica_tentativas_conexao_num = politica_tentativas_conexao
         self.timeout = 10
         self.coll_definicoes_aplicativo = self.banco_dados['db'].definicoes_aplicativo
         self.coll_valores_intervencao = self.banco_dados['db'].valores_intervencao
@@ -57,21 +58,21 @@ class DefinicoesAplicativo(object):
         self.entrada_alvo_intervencao = builder.get_object('entrada_alvo_intervencao')
         self.lista_alvo_intervencao = builder.get_object('lista_alvo_intervencao')
         self.armazenamento_alvo_intervencao = builder.get_object('armazenamento_alvo_intervencao')
-        self.coluna_alvo_intervencao = Gtk.TreeViewColumn('Evolução', Gtk.CellRendererText(), text=0)
+        self.coluna_alvo_intervencao = Gtk.TreeViewColumn('Alvo Intervenção', Gtk.CellRendererText(), text=0)
         self.coluna_alvo_intervencao.set_sort_column_id(0)
         self.lista_alvo_intervencao.append_column(self.coluna_alvo_intervencao)
 
         self.entrada_ponto_critico = builder.get_object('entrada_ponto_critico')
         self.lista_ponto_critico = builder.get_object('lista_ponto_critico')
         self.armazenamento_ponto_critico = builder.get_object('armazenamento_ponto_critico')
-        self.coluna_ponto_critico = Gtk.TreeViewColumn('Evolução', Gtk.CellRendererText(), text=0)
+        self.coluna_ponto_critico = Gtk.TreeViewColumn('Ponto Crítico', Gtk.CellRendererText(), text=0)
         self.coluna_ponto_critico.set_sort_column_id(0)
         self.lista_ponto_critico.append_column(self.coluna_ponto_critico)
 
         self.entrada_acatamento = builder.get_object('entrada_acatamento')
         self.lista_acatamento = builder.get_object('lista_acatamento')
         self.armazenamento_acatamento = builder.get_object('armazenamento_acatamento')
-        self.coluna_acatamento = Gtk.TreeViewColumn('Evolução', Gtk.CellRendererText(), text=0)
+        self.coluna_acatamento = Gtk.TreeViewColumn('Acatamento', Gtk.CellRendererText(), text=0)
         self.coluna_acatamento.set_sort_column_id(0)
         self.lista_acatamento.append_column(self.coluna_acatamento)
 
@@ -120,74 +121,106 @@ class DefinicoesAplicativo(object):
                                       self.armazenamento_acatamento, 'acatamento')
                                  })
 
-        self.carregar_definicoes()
-
         self.statusbar_definicoes_aplicativo.push(
             self.statusbar_definicoes_aplicativo.get_context_id('info'),
             'Alterações nessas propriedades podem causar mudanças visíveis somente se o programa for reiniciado.')
 
+        self.carregar_definicoes()
+
         self.tela_definicoes_aplicativo.show_all()
 
     def carregar_definicoes(self):
-        item = self.coll_definicoes_aplicativo.find_one({'_id': 0})
-        farmaceutico_responsavel = item['farmaceutico_responsavel']
-        politica_nome_farmaceutico = item['politica_nome_farmaceutico']
-        politica_modulos_sem_permissao = item['politica_modulos_sem_permissao']
-        politica_acesso_inicial = item['politica_acesso_inicial']
-        politica_tentativas_conexao = item['politica_tentativas_conexao']
+        for retries in range(self.politica_tentativas_conexao_num):
+            try:
 
-        self.farmaceutico_responsavel.set_text(farmaceutico_responsavel)
+                item = self.coll_definicoes_aplicativo.find_one({'_id': 0})
+                farmaceutico_responsavel = item['farmaceutico_responsavel']
+                politica_nome_farmaceutico = item['politica_nome_farmaceutico']
+                politica_modulos_sem_permissao = item['politica_modulos_sem_permissao']
+                politica_acesso_inicial = item['politica_acesso_inicial']
+                politica_tentativas_conexao = item['politica_tentativas_conexao']
 
-        if politica_nome_farmaceutico == 'definido':
-            self.politica_nome_do_farmaceutico_definido.set_active(True)
-        elif politica_nome_farmaceutico == 'manual':
-            self.politica_nome_do_farmaceutico_manual.set_active(True)
+                self.farmaceutico_responsavel.set_text(farmaceutico_responsavel)
 
-        if politica_modulos_sem_permissao == 'desabilitados':
-            self.politica_modulos_sem_permissao_desabilitado.set_active(True)
-        elif politica_modulos_sem_permissao == 'removidos':
-            self.politica_modulos_sem_permissao_removido.set_active(True)
+                if politica_nome_farmaceutico == 'definido':
+                    self.politica_nome_do_farmaceutico_definido.set_active(True)
+                elif politica_nome_farmaceutico == 'manual':
+                    self.politica_nome_do_farmaceutico_manual.set_active(True)
 
-        if politica_acesso_inicial == 'todos':
-            self.politica_acesso_inicial_todos.set_active(True)
-        elif politica_acesso_inicial == 'nenhum':
-            self.politica_acesso_inicial_nenhum.set_active(True)
+                if politica_modulos_sem_permissao == 'desabilitados':
+                    self.politica_modulos_sem_permissao_desabilitado.set_active(True)
+                elif politica_modulos_sem_permissao == 'removidos':
+                    self.politica_modulos_sem_permissao_removido.set_active(True)
 
-        self.politica_tentativas_conexao.set_text(str(politica_tentativas_conexao))
+                if politica_acesso_inicial == 'todos':
+                    self.politica_acesso_inicial_todos.set_active(True)
+                elif politica_acesso_inicial == 'nenhum':
+                    self.politica_acesso_inicial_nenhum.set_active(True)
 
-        self.carregar_valores(self.armazenamento_intervencao, self.coll_valores_intervencao)
-        self.carregar_valores(self.armazenamento_prescritor, self.coll_valores_prescritor)
-        self.carregar_valores(self.armazenamento_evolucao, self.coll_valores_evolucao)
-        self.carregar_valores(self.armazenamento_alvo_intervencao, self.coll_valores_alvo_intervencao)
-        self.carregar_valores(self.armazenamento_ponto_critico, self.coll_valores_ponto_critico)
-        self.carregar_valores(self.armazenamento_acatamento, self.coll_valores_acatamento)
+                self.politica_tentativas_conexao.set_text(str(politica_tentativas_conexao))
 
-    @staticmethod
-    def carregar_valores(armazenamento, colecao):
-        armazenamento.clear()
-        valores = colecao.find({})
-        for valor in valores:
-            armazenamento.append([valor['valor']])
+                self.carregar_valores(self.armazenamento_intervencao, self.coll_valores_intervencao)
+                self.carregar_valores(self.armazenamento_prescritor, self.coll_valores_prescritor)
+                self.carregar_valores(self.armazenamento_evolucao, self.coll_valores_evolucao)
+                self.carregar_valores(self.armazenamento_alvo_intervencao, self.coll_valores_alvo_intervencao)
+                self.carregar_valores(self.armazenamento_ponto_critico, self.coll_valores_ponto_critico)
+                self.carregar_valores(self.armazenamento_acatamento, self.coll_valores_acatamento)
+                break
+            except errors.AutoReconnect:
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            self.salvar_e_fechar.set_sensitive(False)
+            self.statusbar_definicoes_aplicativo.push(
+                self.statusbar_definicoes_aplicativo.get_context_id('info'),
+                'Não foi possível estabelecer uma conexão com o banco de dados.')
+
+    def carregar_valores(self, armazenamento, colecao):
+        for retries in range(self.politica_tentativas_conexao_num):
+            try:
+                armazenamento.clear()
+                valores = colecao.find({})
+                for valor in valores:
+                    armazenamento.append([valor['valor']])
+                break
+            except errors.AutoReconnect:
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            self.statusbar_definicoes_aplicativo.push(
+                self.statusbar_definicoes_aplicativo.get_context_id('info'),
+                'Não foi possível estabelecer uma conexão com o banco de dados.')
 
     def adicionar_valores(self, widget, entrada, colecao, armazenamento, nome_tabela_formatado):
         print('adicionar_valores', nome_tabela_formatado, widget)
         if len(str(entrada.get_text()).strip()) > 0:
             valor = entrada.get_text()
-            objectid_id = colecao.insert_one({'valor': valor}).inserted_id
-            entrada.set_text('')
-            encontrado = None  # para testar abaixo a adição no banco de dados
-            tentativas = 0
-            while encontrado is not None and tentativas < self.timeout:
-                encontrado = colecao.find_one({'_id': objectid.ObjectId(objectid_id)})
-                time.sleep(1)
-                tentativas += 1
-            self.carregar_valores(armazenamento, colecao)
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('adicionado'),
-                'O item \'{0}\' foi adicionado à tabela {1} com sucesso.'.format(valor, nome_tabela_formatado))
+            for retries in range(self.politica_tentativas_conexao_num):
+                try:
+                    objectid_id = colecao.insert_one({'valor': valor}).inserted_id
+                    entrada.set_text('')
+                    encontrado = None  # para testar abaixo a adição no banco de dados
+                    tentativas = 0
+                    while encontrado is None and tentativas < self.timeout:
+                        print('executado1')
+                        encontrado = colecao.find_one({'_id': objectid.ObjectId(objectid_id)})
+                        print('executado2')
+                        print(encontrado)
+                        time.sleep(1)
+                        tentativas += 1
+                    self.carregar_valores(armazenamento, colecao)
+                    self.statusbar_definicoes_aplicativo.push(
+                        self.statusbar_definicoes_aplicativo.get_context_id('info'),
+                        'O item \'{0}\' foi adicionado à tabela {1} com sucesso.'.format(valor, nome_tabela_formatado))
+                    break
+                except errors.AutoReconnect:
+                    print('Tentando reconectar ao banco de dados.')
+            else:
+                print('conexão com o banco de dados não foi estabelecida')
+                self.statusbar_definicoes_aplicativo.push(
+                    self.statusbar_definicoes_aplicativo.get_context_id('info'),
+                    'Não foi possível estabelecer uma conexão com o banco de dados.')
         else:
             self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
+                self.statusbar_definicoes_aplicativo.get_context_id('info'),
                 'O campo de entrada da tabela {0} deve ser preenchido antes de'
                 ' ser adicionado à tabela.'.format(nome_tabela_formatado))
 
@@ -197,18 +230,28 @@ class DefinicoesAplicativo(object):
         modelo, iteracao = selecao.get_selected()
         if iteracao is not None:
             valor = modelo.get_value(iteracao, 0)
-            deletados = colecao.delete_one({'valor': valor}).deleted_count
-            tentativas = 0
-            while deletados != 1 and tentativas < self.timeout:
-                time.sleep(1)
-                tentativas += 1
-            self.carregar_valores(armazenamento, colecao)
-            self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('removido'),
-                'O item \'{0}\' foi removido da tabela {1} com sucesso.'.format(valor, nome_tabela_formatado))
+            for retries in range(self.politica_tentativas_conexao_num):
+                try:
+                    deletados = colecao.delete_one({'valor': valor}).deleted_count
+                    tentativas = 0
+                    while deletados != 1 and tentativas < self.timeout:
+                        time.sleep(1)
+                        tentativas += 1
+                    self.carregar_valores(armazenamento, colecao)
+                    self.statusbar_definicoes_aplicativo.push(
+                        self.statusbar_definicoes_aplicativo.get_context_id('info'),
+                        'O item \'{0}\' foi removido da tabela {1} com sucesso.'.format(valor, nome_tabela_formatado))
+                    break
+                except errors.AutoReconnect:
+                    print('Tentando reconectar ao banco de dados.')
+            else:
+                print('conexão com o banco de dados não foi estabelecida')
+                self.statusbar_definicoes_aplicativo.push(
+                    self.statusbar_definicoes_aplicativo.get_context_id('info'),
+                    'Não foi possível estabelecer uma conexão com o banco de dados.')
         else:
             self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('atencao'),
+                self.statusbar_definicoes_aplicativo.get_context_id('info'),
                 'Um item da tabela {0} deve ser selecionado antes de ser removido.'.format(nome_tabela_formatado))
 
     def salvar_definicoes_e_fechar(self, widget):
@@ -237,12 +280,21 @@ class DefinicoesAplicativo(object):
 
         politica_tentativas_conexao = self.politica_tentativas_conexao.get_text()
 
-        self.coll_definicoes_aplicativo.update_one(
-            {'_id': 0},
-            {'$set': {'farmaceutico_responsavel': farmaceutico_responsavel,
-                      'politica_nome_farmaceutico': politica_nome_farmaceutico,
-                      'politica_modulos_sem_permissao': politica_modulos_sem_permissao,
-                      'politica_acesso_inicial': politica_acesso_inicial,
-                      'politica_tentativas_conexao': int(politica_tentativas_conexao)}}
-        )
-        self.tela_definicoes_aplicativo.close()
+        for retries in range(self.politica_tentativas_conexao_num):
+            try:
+                self.coll_definicoes_aplicativo.update_one(
+                    {'_id': 0},
+                    {'$set': {'farmaceutico_responsavel': farmaceutico_responsavel,
+                              'politica_nome_farmaceutico': politica_nome_farmaceutico,
+                              'politica_modulos_sem_permissao': politica_modulos_sem_permissao,
+                              'politica_acesso_inicial': politica_acesso_inicial,
+                              'politica_tentativas_conexao': int(politica_tentativas_conexao)}}
+                )
+                self.tela_definicoes_aplicativo.close()
+                break
+            except errors.AutoReconnect:
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            self.statusbar_definicoes_aplicativo.push(
+                self.statusbar_definicoes_aplicativo.get_context_id('info'),
+                'Não foi possível estabelecer uma conexão com o banco de dados.')

@@ -24,9 +24,15 @@ class Login(object):
         # Setando o 'tab sequence' da tela. Deve ser feito com o container. Nesse caso: o grid.
         self.grid_login.set_focus_chain([self.usuario, self.senha, self.logar, self.criar_usuario])
 
-        self.banco_dados, self.coll_usuarios, self.coll_definicoes_aplicativo = self.connect_db()
+        try:
+            self.banco_dados, self.coll_usuarios, self.coll_definicoes_aplicativo = self.connect_db()
+        except TypeError:
+            print('Não foi possível conectar ao banco da dados, as coleções não serão definidas.')
 
-        self.politica_tentativas_conexao, self.politica_acesso_inicial = self.check_definicoes_aplicativo()
+        try:
+            self.politica_tentativas_conexao, self.politica_acesso_inicial = self.check_definicoes_aplicativo()
+        except TypeError:
+            print('As definições do aplicativo não foram obtidas. As políticas não serão definidas.')
 
         builder.connect_signals({"gtk_main_quit": Gtk.main_quit,
                                  "on_criar_usuario_clicked": self.func_criar_usuario,
@@ -35,8 +41,7 @@ class Login(object):
         self.tela_login.show_all()
 
     def connect_db(self):
-        print('connect db')
-        client, db, coll_usuarios, coll_definicoes_aplicativo = None, None, None, None
+        print('Tentativa de conexão com o banco da dados iniciada.')
         for retries in range(3):
             try:
                 client = pymongo.MongoClient('mongodb://localhost')
@@ -46,16 +51,16 @@ class Login(object):
                 client.server_info()
                 self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
                                           'Conexão com banco de dados sucedida!')
-                break
+                banco_dados = {'client': client, 'db': db}
+                return banco_dados, coll_usuarios, coll_definicoes_aplicativo
             except pymongo.errors.AutoReconnect:
-                self.logar.set_sensitive(False)
-                self.criar_usuario.set_sensitive(False)
-                self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
-                                          'Conexão com banco de dados falhou. Verifique.')
                 print('Banco de Dados não está disponível. Tentando novamente:', retries)
-                self.tela_login.error_bell()
-        banco_dados = {'client': client, 'db': db}
-        return banco_dados, coll_usuarios, coll_definicoes_aplicativo
+        else:
+            self.logar.set_sensitive(False)
+            self.criar_usuario.set_sensitive(False)
+            self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
+                                      'Conexão com banco de dados falhou. Verifique.')
+            self.tela_login.error_bell()
 
     def func_criar_usuario(self, widget):
         print('func_criar_usuario', widget)
@@ -76,7 +81,7 @@ class Login(object):
                 print('Tentando reconectar ao banco de dados.')
         else:
             self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
-                                      'Conexão com banco de dados falhou. Verifique.')
+                                      'Não foi possível estabelecer uma conexão com o banco de dados.')
             return
 
         if item is not None:
@@ -99,7 +104,8 @@ class Login(object):
             usuario = str(self.usuario.get_text()).lower()
             modulobase = ModuloBase(banco_dados=self.banco_dados,
                                     usuario=usuario,
-                                    politica_tentativas_conexao=self.politica_tentativas_conexao)
+                                    politica_tentativas_conexao=self.politica_tentativas_conexao,
+                                    hspw=new_hash)
             print(modulobase)
         else:
             self.statusbar_login.push(self.statusbar_login.get_context_id('login'),
@@ -114,16 +120,27 @@ class Login(object):
             return False
 
     def check_definicoes_aplicativo(self):
-        quantidade_definicoes = self.coll_definicoes_aplicativo.find().count()
-        if quantidade_definicoes == 0:
-            self.coll_definicoes_aplicativo.insert({
-                '_id': 0,
-                'farmaceutico_responsavel': 'indefinido',
-                'politica_nome_farmaceutico': 'definido',
-                'politica_modulos_sem_permissao': 'desabilitados',
-                'politica_acesso_inicial': 'todos',
-                'politica_tentativas_conexao': 3
-            })
-            return 3, 'todos'
-        item = self.coll_definicoes_aplicativo.find_one({'_id': 0})
-        return item['politica_tentativas_conexao'], item['politica_acesso_inicial']
+        for retries in range(3):
+            try:
+                quantidade_definicoes = self.coll_definicoes_aplicativo.find().count()
+                if quantidade_definicoes == 0:
+                    self.coll_definicoes_aplicativo.insert({
+                        '_id': 0,
+                        'farmaceutico_responsavel': 'indefinido',
+                        'politica_nome_farmaceutico': 'definido',
+                        'politica_modulos_sem_permissao': 'desabilitados',
+                        'politica_acesso_inicial': 'todos',
+                        'politica_tentativas_conexao': 3
+                    })
+                    return 3, 'todos'
+                item = self.coll_definicoes_aplicativo.find_one({'_id': 0})
+                return item['politica_tentativas_conexao'], item['politica_acesso_inicial']
+            except errors.AutoReconnect:
+                print('Banco de Dados não está disponível. Tentando novamente:', retries)
+            except AttributeError:
+                print('As coleções não foram definidas no passa anterior, provável erro de conexão com o banco.')
+        else:
+            self.logar.set_sensitive(False)
+            self.criar_usuario.set_sensitive(False)
+            self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
+                                      'Não foi possível estabelecer uma conexão com o banco de dados.')
