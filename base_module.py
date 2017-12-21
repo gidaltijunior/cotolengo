@@ -5,6 +5,7 @@ from gi.repository import Gtk
 from tela_sobre import Sobre
 from definicoes_aplicativo import DefinicoesAplicativo
 from meu_usuario import MeuUsuario
+from gerenciamento_permissoes import GerenciamentoPermissoes
 
 
 class ModuloBase(object):
@@ -140,7 +141,10 @@ class ModuloBase(object):
         print('tela_definicoes_aplicativo', tela_meu_usuario, widget)
 
     def func_abrir_tela_opcoes_gerenciamento_permissoes(self, widget):
-        pass
+        tela_gerenciamento_permissoes = GerenciamentoPermissoes(
+            banco_dados=self.banco_dados,
+            politica_tentativas_conexao=self.politica_tentativas_conexao)
+        print('tela_gerenciamento_permissoes', tela_gerenciamento_permissoes, widget)
 
     def func_abrir_tela_ajuda_documentacao(self, widget):
         pass
