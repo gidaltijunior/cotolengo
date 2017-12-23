@@ -11,7 +11,7 @@ class CriarUsuario(object):
 
     def __init__(self, usuarios_db, definicoes_aplicativo, politica_tentativas_conexao, politica_acesso_inicial):
         builder = Gtk.Builder()
-        builder.add_from_file('tela_criar_usuario.glade')
+        builder.add_from_file('glade/tela_criar_usuario.glade')
         self.tela_criar_usuario = builder.get_object('tela_criar_usuario')
         self.grid_criar_usuario = builder.get_object('grid_criar_usuario')
         self.nome_completo = builder.get_object('nome_completo')

@@ -18,7 +18,7 @@ class ModuloBase(object):
         self.hspw = hspw
 
         builder = Gtk.Builder()
-        builder.add_from_file('tela_base.glade')
+        builder.add_from_file('glade/tela_base.glade')
         self.tela_base = builder.get_object('tela_base')
         self.statusbar_base = builder.get_object('statusbar_base')
 

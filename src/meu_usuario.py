@@ -16,7 +16,7 @@ class MeuUsuario(object):
         self.coll_usuarios = self.banco_dados['db'].usuarios
 
         builder = Gtk.Builder()
-        builder.add_from_file('tela_meu_usuario.glade')
+        builder.add_from_file('glade/tela_meu_usuario.glade')
         self.tela_meu_usuario = builder.get_object('tela_meu_usuario')
         self.usuario = builder.get_object('usuario')
         self.nome_completo = builder.get_object('nome_completo')

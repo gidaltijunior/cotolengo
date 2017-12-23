@@ -23,7 +23,7 @@ class DefinicoesAplicativo(object):
         self.coll_valores_acatamento = self.banco_dados['db'].valores_acatamento
 
         builder = Gtk.Builder()
-        builder.add_from_file('tela_definicoes_aplicativo.glade')
+        builder.add_from_file('glade/tela_definicoes_aplicativo.glade')
         self.tela_definicoes_aplicativo = builder.get_object('tela_definicoes_aplicativo')
         self.farmaceutico_responsavel = builder.get_object('farmaceutico_responsavel')
         self.politica_nome_do_farmaceutico_manual = builder.get_object('politica_nome_do_farmaceutico1')

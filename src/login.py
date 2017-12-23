@@ -12,7 +12,7 @@ class Login(object):
     def __init__(self):
         self.validacao_ok = False
         builder = Gtk.Builder()
-        builder.add_from_file('tela_login.glade')
+        builder.add_from_file('glade/tela_login.glade')
         self.tela_login = builder.get_object('tela_login')
         self.grid_login = builder.get_object('grid_login')
         self.usuario = builder.get_object('usuario')

@@ -1,7 +1,6 @@
 import datetime as dt
 from pymongo import errors
 import gi
-
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
@@ -15,7 +14,7 @@ class GerenciamentoPermissoes(object):
         self.coll_usuarios = self.banco_dados['db'].usuarios
 
         builder = Gtk.Builder()
-        builder.add_from_file('tela_gerenciamento_permissoes.glade')
+        builder.add_from_file('glade/tela_gerenciamento_permissoes.glade')
         self.tela_gerenciamento_permissoes = builder.get_object('tela_gerenciamento_permissoes')
         self.botao_autorizar = builder.get_object('autorizar')
         self.botao_desautorizar = builder.get_object('desautorizar')
@@ -79,8 +78,27 @@ class GerenciamentoPermissoes(object):
         self.tela_gerenciamento_permissoes.show_all()
 
     def autorizar(self, widget):
-        # TODO: Implementar Autorizar
-        pass
+        print('autorizar', widget)
+        selecao = self.lista_desautorizados.get_selection()
+        modelo, iteracao = selecao.get_selected()
+        valor = modelo.get_value(iteracao, 0)
+        for retries in range(self.politica_tentativas_conexao):
+            try:
+                autorizados = self.coll_usuarios.update_one({'usuario': valor}, {'$set': {'autorizado': True}})
+                print('autorizados', autorizados)
+                self.carregar_desautorizados()
+                self.carregar_autorizados()
+                self.statusbar_gerenciamento_permissoes.push(
+                    self.statusbar_gerenciamento_permissoes.get_context_id('info'),
+                    'O usuário \'{0}\' foi autorizado com sucesso.'.format(valor))
+                break
+            except errors.AutoReconnect:
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            print('conexão com o banco de dados não foi estabelecida')
+            self.statusbar_gerenciamento_permissoes.push(
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
+                'Não foi possível estabelecer uma conexão com o banco de dados.')
 
     def autorizado_selecionado(self, widget):
         print('autorizado_selecionado', widget)
@@ -89,8 +107,27 @@ class GerenciamentoPermissoes(object):
         self.visao_arvore_desautorizados.unselect_all()
 
     def desautorizar(self, widget):
-        # TODO: Implementar Desautorizar
-        pass
+        print('desautorizar', widget)
+        selecao = self.lista_autorizados.get_selection()
+        modelo, iteracao = selecao.get_selected()
+        valor = modelo.get_value(iteracao, 0)
+        for retries in range(self.politica_tentativas_conexao):
+            try:
+                desautorizados = self.coll_usuarios.update_one({'usuario': valor}, {'$set': {'autorizado': False}})
+                print('desautorizados', desautorizados)
+                self.carregar_desautorizados()
+                self.carregar_autorizados()
+                self.statusbar_gerenciamento_permissoes.push(
+                    self.statusbar_gerenciamento_permissoes.get_context_id('info'),
+                    'O usuário \'{0}\' foi desautorizado com sucesso.'.format(valor))
+                break
+            except errors.AutoReconnect:
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            print('conexão com o banco de dados não foi estabelecida')
+            self.statusbar_gerenciamento_permissoes.push(
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
+                'Não foi possível estabelecer uma conexão com o banco de dados.')
 
     def desautorizado_selecionado(self, widget):
         print('desautorizado_selecionado', widget)

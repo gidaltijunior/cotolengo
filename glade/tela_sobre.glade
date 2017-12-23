@@ -17,7 +17,7 @@
     <property name="website">https://github.com/gidaltijunior/cotolengo</property>
     <property name="website_label" translatable="yes">Projeto no GitHub</property>
     <property name="authors">Gidalti Lourenço Junior &lt;gidaltijunior@gmail.com&gt; - gidaltijunior@gmail.com</property>
-    <property name="logo">logo_farmacia_cotolengo_sem_escrita.svg</property>
+    <property name="logo">../images/logo_farmacia_cotolengo_sem_escrita.svg</property>
     <property name="license_type">gpl-3-0</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="aboutdialog-vbox1">
