@@ -1,4 +1,6 @@
-# cotolengo
+# Cotolengo - Farmácia Clínica
+
+[![Build Status](https://travis-ci.org/gidaltijunior/cotolengo-farmacia.svg?branch=master)](https://travis-ci.org/gidaltijunior/cotolengo-farmacia)
 
 Esse aplicativo destina-se a facilitar o trabalho na farmácia e farmácia clínica da Organização Não Governamental Pequeno Cotolengo em Curitiba-PR, e foi feito sem nenhum custo para a entidade.
 
