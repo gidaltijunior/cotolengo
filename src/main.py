@@ -3,7 +3,7 @@ Author: Gidalti Lourenço Junior
 Contact: gidaltijunior@gmail.com
 Description: A program to help to control pharmacy prescriptions in Pequeno Cotolengo NGO.
 
-Copyright (C) 2017  Gidalti Lourenço Junior
+Copyright (C) 2018  Gidalti Lourenço Junior
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

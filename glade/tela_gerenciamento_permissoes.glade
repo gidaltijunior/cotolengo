@@ -237,7 +237,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton1">
+                          <object class="GtkCheckButton" id="checkbutton_nova_analise_prescricao">
                             <property name="label" translatable="yes">Nova Análise da Prescrição</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -255,7 +255,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton2">
+                          <object class="GtkCheckButton" id="checkbutton_abrir_analise_prescricao">
                             <property name="label" translatable="yes">Abrir Análises de Prescrições</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -272,7 +272,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton3">
+                          <object class="GtkCheckButton" id="checkbutton_abrir_intervencoes">
                             <property name="label" translatable="yes">Novas/Abrir Intervenções</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -289,7 +289,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton4">
+                          <object class="GtkCheckButton" id="checkbutton_abrir_esclarecimentos">
                             <property name="label" translatable="yes">Novas/Abrir Esclarecimentos</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -306,7 +306,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton5">
+                          <object class="GtkCheckButton" id="checkbutton_dados_por_lar">
                             <property name="label" translatable="yes">Dados por Lar</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -323,7 +323,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton6">
+                          <object class="GtkCheckButton" id="checkbutton_dados_totais">
                             <property name="label" translatable="yes">Dados Totais</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -340,7 +340,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton7">
+                          <object class="GtkCheckButton" id="checkbutton_cadastro_morador">
                             <property name="label" translatable="yes">Cadastro Morador</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -357,7 +357,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton8">
+                          <object class="GtkCheckButton" id="checkbutton_cadastro_medicamento">
                             <property name="label" translatable="yes">Cadastro Medicamento</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -374,8 +374,8 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton9">
-                            <property name="label" translatable="yes">Definições do Aplicativo</property>
+                          <object class="GtkCheckButton" id="checkbutton_opcoes_definicoes">
+                            <property name="label" translatable="yes">Definições do Aplicativo ( ! )</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -391,7 +391,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton19">
+                          <object class="GtkCheckButton" id="checkbutton_opcoes_meu_usuario">
                             <property name="label" translatable="yes">Dados do Meu Usuário</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -420,7 +420,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton10">
+                          <object class="GtkCheckButton" id="checkbutton_historico_analise_prescricao">
                             <property name="label" translatable="yes">Histórico Análise da Prescrição</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -438,7 +438,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton11">
+                          <object class="GtkCheckButton" id="checkbutton_historico_cadastro_morador">
                             <property name="label" translatable="yes">Histórico Cadastro Morador</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -455,7 +455,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton12">
+                          <object class="GtkCheckButton" id="checkbutton_historico_cadastro_medicamento">
                             <property name="label" translatable="yes">Histórico Cadastro Medicamento</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -472,7 +472,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton13">
+                          <object class="GtkCheckButton" id="checkbutton_historico_opcoes_definicoes">
                             <property name="label" translatable="yes">Histórico Definições do Aplicativo</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -489,7 +489,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton14">
+                          <object class="GtkCheckButton" id="checkbutton_historico_opcoes_usuario">
                             <property name="label" translatable="yes">Histórico Dados do Usuário</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -506,7 +506,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton15">
+                          <object class="GtkCheckButton" id="checkbutton_historico_gerenciamento_permissoes">
                             <property name="label" translatable="yes">Histórico Autorização e Permissões</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -523,7 +523,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton16">
+                          <object class="GtkCheckButton" id="checkbutton_historico_intervencoes">
                             <property name="label" translatable="yes">Histórico Intervenções</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -540,7 +540,7 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton17">
+                          <object class="GtkCheckButton" id="checkbutton_historico_esclarecimentos">
                             <property name="label" translatable="yes">Histórico Esclarecimentos</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -557,8 +557,8 @@ Ao selecionar os módulos necessários para o usuário, pressione o botão 'Salv
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="checkbutton18">
-                            <property name="label" translatable="yes">Autorização e Permissões (esta tela)</property>
+                          <object class="GtkCheckButton" id="checkbutton_opcoes_gerenciamento_permissoes">
+                            <property name="label" translatable="yes">Autorização e Permissões (esta tela) ( ! )</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>

@@ -6,6 +6,7 @@ from tela_sobre import Sobre
 from definicoes_aplicativo import DefinicoesAplicativo
 from meu_usuario import MeuUsuario
 from gerenciamento_permissoes import GerenciamentoPermissoes
+from cadastro_paciente import CadastroMorador
 
 
 class ModuloBase(object):
@@ -100,7 +101,11 @@ class ModuloBase(object):
         pass
 
     def func_abrir_tela_cadastro_morador(self, widget):
-        pass
+        tela_cadastro_morador = CadastroMorador(
+            banco_dados=self.banco_dados,
+            politica_tentativas_conexao=self.politica_tentativas_conexao,
+            usuario=self.usuario)
+        print('tela_cadastro_morador', tela_cadastro_morador, widget)
 
     def func_abrir_tela_cadastro_medicamento(self, widget):
         pass

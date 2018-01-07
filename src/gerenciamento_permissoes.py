@@ -55,6 +55,29 @@ class GerenciamentoPermissoes(object):
         self.coluna_usuarios.set_sort_column_id(0)
         self.lista_usuarios.append_column(self.coluna_usuarios)
 
+        self.checkbutton_nova_analise_prescricao = builder.get_object('checkbutton_nova_analise_prescricao')
+        self.checkbutton_abrir_analise_prescricao = builder.get_object('checkbutton_abrir_analise_prescricao')
+        self.checkbutton_abrir_intervencoes = builder.get_object('checkbutton_abrir_intervencoes')
+        self.checkbutton_abrir_esclarecimentos = builder.get_object('checkbutton_abrir_esclarecimentos')
+        self.checkbutton_dados_por_lar = builder.get_object('checkbutton_dados_por_lar')
+        self.checkbutton_dados_totais = builder.get_object('checkbutton_dados_totais')
+        self.checkbutton_cadastro_morador = builder.get_object('checkbutton_cadastro_morador')
+        self.checkbutton_cadastro_medicamento = builder.get_object('checkbutton_cadastro_medicamento')
+        self.checkbutton_opcoes_definicoes = builder.get_object('checkbutton_opcoes_definicoes')
+        self.checkbutton_opcoes_meu_usuario = builder.get_object('checkbutton_opcoes_meu_usuario')
+        self.checkbutton_historico_analise_prescricao = builder.get_object('checkbutton_historico_analise_prescricao')
+        self.checkbutton_historico_cadastro_morador = builder.get_object('checkbutton_historico_cadastro_morador')
+        self.checkbutton_historico_cadastro_medicamento = builder.get_object(
+            'checkbutton_historico_cadastro_medicamento')
+        self.checkbutton_historico_opcoes_definicoes = builder.get_object('checkbutton_historico_opcoes_definicoes')
+        self.checkbutton_historico_opcoes_usuario = builder.get_object('checkbutton_historico_opcoes_usuario')
+        self.checkbutton_historico_gerenciamento_permissoes = builder.get_object(
+            'checkbutton_historico_gerenciamento_permissoes')
+        self.checkbutton_historico_intervencoes = builder.get_object('checkbutton_historico_intervencoes')
+        self.checkbutton_historico_esclarecimentos = builder.get_object('checkbutton_historico_esclarecimentos')
+        self.checkbutton_opcoes_gerenciamento_permissoes = builder.get_object(
+            'checkbutton_opcoes_gerenciamento_permissoes')
+
         self.statusbar_gerenciamento_permissoes = builder.get_object('statusbar_gerenciamento_permissoes')
 
         builder.connect_signals({
@@ -136,8 +159,70 @@ class GerenciamentoPermissoes(object):
         self.visao_arvore_autorizados.unselect_all()
 
     def salvar(self, widget):
-        # TODO: Implementar Salvar
-        pass
+        print('salvar', widget)
+        selecao = self.lista_usuarios.get_selection()
+        modelo, iteracao = selecao.get_selected()
+        valor = modelo.get_value(iteracao, 0)
+
+        checkbutton_nova_analise_prescricao = self.checkbutton_nova_analise_prescricao.get_active()
+        checkbutton_abrir_analise_prescricao = self.checkbutton_abrir_analise_prescricao.get_active()
+        checkbutton_abrir_intervencoes = self.checkbutton_abrir_intervencoes.get_active()
+        checkbutton_abrir_esclarecimentos = self.checkbutton_abrir_esclarecimentos.get_active()
+        checkbutton_dados_por_lar = self.checkbutton_dados_por_lar.get_active()
+        checkbutton_dados_totais = self.checkbutton_dados_totais.get_active()
+        checkbutton_cadastro_morador = self.checkbutton_cadastro_morador.get_active()
+        checkbutton_cadastro_medicamento = self.checkbutton_cadastro_medicamento.get_active()
+        checkbutton_opcoes_definicoes = self.checkbutton_opcoes_definicoes.get_active()
+        checkbutton_opcoes_meu_usuario = self.checkbutton_opcoes_meu_usuario.get_active()
+        checkbutton_historico_analise_prescricao = self.checkbutton_historico_analise_prescricao.get_active()
+        checkbutton_historico_cadastro_morador = self.checkbutton_historico_cadastro_morador.get_active()
+        checkbutton_historico_cadastro_medicamento = self.checkbutton_historico_cadastro_medicamento.get_active()
+        checkbutton_historico_opcoes_definicoes = self.checkbutton_historico_opcoes_definicoes.get_active()
+        checkbutton_historico_opcoes_usuario = self.checkbutton_historico_opcoes_usuario.get_active()
+        checkbutton_historico_gerenciamento_permissoes = \
+            self.checkbutton_historico_gerenciamento_permissoes.get_active()
+        checkbutton_historico_intervencoes = self.checkbutton_historico_intervencoes.get_active()
+        checkbutton_historico_esclarecimentos = self.checkbutton_historico_esclarecimentos.get_active()
+        checkbutton_opcoes_gerenciamento_permissoes = self.checkbutton_opcoes_gerenciamento_permissoes.get_active()
+
+        for retries in range(self.politica_tentativas_conexao):
+            try:
+                permissoes = self.coll_usuarios.update_one(
+                    {'usuario': valor}, {'$set': {
+                        'permissoes.nova_analise_prescricao': checkbutton_nova_analise_prescricao,
+                        'permissoes.abrir_analise_prescricao': checkbutton_abrir_analise_prescricao,
+                        'permissoes.abrir_intervencoes': checkbutton_abrir_intervencoes,
+                        'permissoes.abrir_esclarecimentos': checkbutton_abrir_esclarecimentos,
+                        'permissoes.dados_por_lar': checkbutton_dados_por_lar,
+                        'permissoes.dados_totais': checkbutton_dados_totais,
+                        'permissoes.cadastro_morador': checkbutton_cadastro_morador,
+                        'permissoes.cadastro_medicamento': checkbutton_cadastro_medicamento,
+                        'permissoes.opcoes_definicoes': checkbutton_opcoes_definicoes,
+                        'permissoes.opcoes_meu_usuario': checkbutton_opcoes_meu_usuario,
+                        'permissoes.historico_analise_prescricao': checkbutton_historico_analise_prescricao,
+                        'permissoes.historico_cadastro_morador': checkbutton_historico_cadastro_morador,
+                        'permissoes.historico_cadastro_medicamento': checkbutton_historico_cadastro_medicamento,
+                        'permissoes.historico_opcoes_definicoes': checkbutton_historico_opcoes_definicoes,
+                        'permissoes.historico_opcoes_usuario': checkbutton_historico_opcoes_usuario,
+                        'permissoes.historico_gerenciamento_permissoes': checkbutton_historico_gerenciamento_permissoes,
+                        'permissoes.historico_intervencoes': checkbutton_historico_intervencoes,
+                        'permissoes.historico_esclarecimentos': checkbutton_historico_esclarecimentos,
+                        'permissoes.opcoes_gerenciamento_permissoes': checkbutton_opcoes_gerenciamento_permissoes
+                    }
+                    })
+                print('permissões concedidas', permissoes)
+
+                self.statusbar_gerenciamento_permissoes.push(
+                    self.statusbar_gerenciamento_permissoes.get_context_id('info'),
+                    'Lista de permissões para o usuário \'{0}\' atualizada com sucesso.'.format(valor))
+                break
+            except errors.AutoReconnect:
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            print('conexão com o banco de dados não foi estabelecida')
+            self.statusbar_gerenciamento_permissoes.push(
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
+                'Não foi possível estabelecer uma conexão com o banco de dados.')
 
     def carregar_autorizados(self):
         for retries in range(self.politica_tentativas_conexao):
@@ -189,9 +274,121 @@ class GerenciamentoPermissoes(object):
                 'Não foi possível estabelecer uma conexão com o banco de dados.')
 
     def carregar_checkboxes(self, widget):
-        # print('carregar_checkboxes', widget)
-        # TODO: Implementar Carregar Checkboxes
-        pass
+        print('carregar_checkboxes', widget)
+        selecao = self.lista_usuarios.get_selection()
+        modelo, iteracao = selecao.get_selected()
+        valor = modelo.get_value(iteracao, 0)
+        for retries in range(self.politica_tentativas_conexao):
+            try:
+                permissoes = self.coll_usuarios.find_one({'usuario': valor}, {'_id': 0, 'permissoes': 1})
+                print('desautorizados', permissoes)
+
+                if permissoes['permissoes']['nova_analise_prescricao'] is True:
+                    self.checkbutton_nova_analise_prescricao.set_active(True)
+                else:
+                    self.checkbutton_nova_analise_prescricao.set_active(False)
+
+                if permissoes['permissoes']['abrir_analise_prescricao'] is True:
+                    self.checkbutton_abrir_analise_prescricao.set_active(True)
+                else:
+                    self.checkbutton_abrir_analise_prescricao.set_active(False)
+
+                if permissoes['permissoes']['abrir_intervencoes'] is True:
+                    self.checkbutton_abrir_intervencoes.set_active(True)
+                else:
+                    self.checkbutton_abrir_intervencoes.set_active(False)
+
+                if permissoes['permissoes']['abrir_esclarecimentos'] is True:
+                    self.checkbutton_abrir_esclarecimentos.set_active(True)
+                else:
+                    self.checkbutton_abrir_esclarecimentos.set_active(False)
+
+                if permissoes['permissoes']['dados_por_lar'] is True:
+                    self.checkbutton_dados_por_lar.set_active(True)
+                else:
+                    self.checkbutton_dados_por_lar.set_active(False)
+
+                if permissoes['permissoes']['dados_totais'] is True:
+                    self.checkbutton_dados_totais.set_active(True)
+                else:
+                    self.checkbutton_dados_totais.set_active(False)
+
+                if permissoes['permissoes']['cadastro_morador'] is True:
+                    self.checkbutton_cadastro_morador.set_active(True)
+                else:
+                    self.checkbutton_cadastro_morador.set_active(False)
+
+                if permissoes['permissoes']['cadastro_medicamento'] is True:
+                    self.checkbutton_cadastro_medicamento.set_active(True)
+                else:
+                    self.checkbutton_cadastro_medicamento.set_active(False)
+
+                if permissoes['permissoes']['opcoes_definicoes'] is True:
+                    self.checkbutton_opcoes_definicoes.set_active(True)
+                else:
+                    self.checkbutton_opcoes_definicoes.set_active(False)
+
+                if permissoes['permissoes']['opcoes_meu_usuario'] is True:
+                    self.checkbutton_opcoes_meu_usuario.set_active(True)
+                else:
+                    self.checkbutton_opcoes_meu_usuario.set_active(False)
+
+                if permissoes['permissoes']['historico_analise_prescricao'] is True:
+                    self.checkbutton_historico_analise_prescricao.set_active(True)
+                else:
+                    self.checkbutton_historico_analise_prescricao.set_active(False)
+
+                if permissoes['permissoes']['historico_cadastro_morador'] is True:
+                    self.checkbutton_historico_cadastro_morador.set_active(True)
+                else:
+                    self.checkbutton_historico_cadastro_morador.set_active(False)
+
+                if permissoes['permissoes']['historico_cadastro_medicamento'] is True:
+                    self.checkbutton_historico_cadastro_medicamento.set_active(True)
+                else:
+                    self.checkbutton_historico_cadastro_medicamento.set_active(False)
+
+                if permissoes['permissoes']['historico_opcoes_definicoes'] is True:
+                    self.checkbutton_historico_opcoes_definicoes.set_active(True)
+                else:
+                    self.checkbutton_historico_opcoes_definicoes.set_active(False)
+
+                if permissoes['permissoes']['historico_opcoes_usuario'] is True:
+                    self.checkbutton_historico_opcoes_usuario.set_active(True)
+                else:
+                    self.checkbutton_historico_opcoes_usuario.set_active(False)
+
+                if permissoes['permissoes']['historico_gerenciamento_permissoes'] is True:
+                    self.checkbutton_historico_gerenciamento_permissoes.set_active(True)
+                else:
+                    self.checkbutton_historico_gerenciamento_permissoes.set_active(False)
+
+                if permissoes['permissoes']['historico_intervencoes'] is True:
+                    self.checkbutton_historico_intervencoes.set_active(True)
+                else:
+                    self.checkbutton_historico_intervencoes.set_active(False)
+
+                if permissoes['permissoes']['historico_esclarecimentos'] is True:
+                    self.checkbutton_historico_esclarecimentos.set_active(True)
+                else:
+                    self.checkbutton_historico_esclarecimentos.set_active(False)
+
+                if permissoes['permissoes']['opcoes_gerenciamento_permissoes'] is True:
+                    self.checkbutton_opcoes_gerenciamento_permissoes.set_active(True)
+                else:
+                    self.checkbutton_opcoes_gerenciamento_permissoes.set_active(False)
+
+                self.statusbar_gerenciamento_permissoes.push(
+                    self.statusbar_gerenciamento_permissoes.get_context_id('info'),
+                    'Lista de permissões para o usuário \'{0}\' carregado com sucesso.'.format(valor))
+                break
+            except errors.AutoReconnect:
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            print('conexão com o banco de dados não foi estabelecida')
+            self.statusbar_gerenciamento_permissoes.push(
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
+                'Não foi possível estabelecer uma conexão com o banco de dados.')
 
     def fechar(self, widget):
         print('fechar', widget)
