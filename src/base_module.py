@@ -6,7 +6,7 @@ from tela_sobre import Sobre
 from definicoes_aplicativo import DefinicoesAplicativo
 from meu_usuario import MeuUsuario
 from gerenciamento_permissoes import GerenciamentoPermissoes
-from cadastro_paciente import CadastroMorador
+from cadastro_morador import CadastroMorador
 
 
 class ModuloBase(object):
