@@ -1,8 +1,8 @@
-# Cotolengo - Farmácia Clínica
+# Farmácia Clínica
 
-[![Build Status](https://travis-ci.org/gidaltijunior/cotolengo-farmacia.svg?branch=master)](https://travis-ci.org/gidaltijunior/cotolengo-farmacia)
+[![Build Status](https://travis-ci.org/gidaltijunior/farmacia-clinica.svg?branch=master)](https://travis-ci.org/gidaltijunior/farmacia-clinica)
 
-Esse aplicativo destina-se a facilitar o trabalho na farmácia e farmácia clínica da Organização Não Governamental Pequeno Cotolengo em Curitiba-PR, e foi feito sem nenhum custo para a entidade.
+Esse aplicativo destina-se a facilitar o trabalho na farmácia e farmácia clínica.
 
 Esse aplicativo utiliza o kit de ferramentas gráficas GTK+ 3.18.3.<br>
 Os bindings do GTK+ 3 com o Python é feito pelo pacote PyGobject.
