@@ -130,9 +130,14 @@ class CadastroMorador(object):
 
     def detalhar_dados(self, widget):
         print('detalhar_dados', widget)
-        selecao = self.lista_moradores.get_selection()
-        modelo, iteracao = selecao.get_selected()
-        obj_id = modelo.get_value(iteracao, 0)
+
+        try:
+            selecao = self.lista_moradores.get_selection()
+            modelo, iteracao = selecao.get_selected()
+            obj_id = modelo.get_value(iteracao, 0)
+        except TypeError:
+            return
+
         for retries in range(self.politica_tentativas_conexao):
             try:
                 morador = self.coll_moradores.find_one({'_id': ObjectId(obj_id)})
@@ -176,8 +181,103 @@ class CadastroMorador(object):
                 'Não foi possível estabelecer uma conexão com o banco de dados.')
 
     def atualizar_dados(self, widget):
-        # TODO: implementar atualização dos dados do morador/paciente
-        pass
+        print('atualizar_dados', widget)
+
+        selecao = self.lista_moradores.get_selection()
+        modelo, iteracao = selecao.get_selected()
+        obj_id = modelo.get_value(iteracao, 0)
+
+        nome = self.atualizar_nome.get_text()
+        nascimento = self.atualizar_nascimento.get_text()
+        lar = self.atualizar_lar.get_text()
+        peso = self.atualizar_peso.get_text()
+        observacoes = self.atualizar_textbuffer.get_text(
+            self.atualizar_textbuffer.get_start_iter(), self.atualizar_textbuffer.get_end_iter(), True)
+        ativo = self.atualizar_ativo.get_active()
+
+        if self.atualizar_feminino.get_active():
+            sexo = 'F'
+        else:
+            sexo = 'M'
+
+        if len(nome) > 0:
+            pass
+        else:
+            self.statusbar_cadastro_moradores.push(
+                self.statusbar_cadastro_moradores.get_context_id('info'),
+                'Campo "Nome" não pode estar vazio.')
+            self.tela_cadastro_morador.error_bell()
+            return
+
+        if len(nascimento) > 9:
+            try:
+                nascimento = dt.datetime(int(nascimento[6:]), int(nascimento[3:5]), int(nascimento[0:2]), 0, 0, 0, 0,
+                                         tzinfo=dt.timezone.utc)
+            except Exception as e:
+                print(Exception, e)
+                self.statusbar_cadastro_moradores.push(
+                    self.statusbar_cadastro_moradores.get_context_id('info'),
+                    'Conteúdo do campo "Data de Nascimento" não é valido. Formato esperado é DD/MM/AAAA.')
+                self.tela_cadastro_morador.error_bell()
+                return
+        else:
+            self.statusbar_cadastro_moradores.push(
+                self.statusbar_cadastro_moradores.get_context_id('info'),
+                'Campo "Data de Nascimento" não pode estar vazio.')
+            self.tela_cadastro_morador.error_bell()
+            return
+
+        if len(lar) > 0:
+            pass
+        else:
+            self.statusbar_cadastro_moradores.push(
+                self.statusbar_cadastro_moradores.get_context_id('info'),
+                'Campo "Lar" não pode estar vazio.')
+            self.tela_cadastro_morador.error_bell()
+            return
+
+        peso = str(peso).replace(',', '.')
+
+        if float(peso) > 0:
+            peso = float(peso)
+        else:
+            self.statusbar_cadastro_moradores.push(
+                self.statusbar_cadastro_moradores.get_context_id('info'),
+                'Campo "Peso" não pode ser zero.')
+            self.tela_cadastro_morador.error_bell()
+            return
+
+        for retries in range(self.politica_tentativas_conexao):
+            try:
+                objectid_id = self.coll_moradores.update_one(
+                    {'_id': ObjectId(obj_id)},
+                    {'$set': {'nome': nome,
+                              'data_nascimento': nascimento,
+                              'sexo': sexo,
+                              'lar': lar,
+                              'peso': peso,
+                              'observacoes': observacoes,
+                              'ativo': ativo}
+                     }
+                )
+                print('Atualização realizada para object_id:', objectid_id)
+
+                path = modelo.get_path(iteracao) # o número da linha na lista de moradores
+                self.carregar_lista() # refresh na lista de moradores
+                self.lista_moradores.set_cursor(path) # selecionamos a mesma linha antes do refresh
+
+                self.statusbar_cadastro_moradores.push(
+                    self.statusbar_cadastro_moradores.get_context_id('info'),
+                    'O cadastro do morador "{0}" foi atualizado com sucesso.'.format(nome))
+                break
+            except errors.AutoReconnect:
+                print('Tentando reconectar ao banco de dados.')
+        else:
+            print('conexão com o banco de dados não foi estabelecida')
+            self.statusbar_cadastro_moradores.push(
+                self.statusbar_cadastro_moradores.get_context_id('info'),
+                'Não foi possível estabelecer uma conexão com o banco de dados.')
+            self.tela_cadastro_morador.error_bell()
 
     def incluir_morador(self, widget):
         print('incluir_morador', widget)
