@@ -7,6 +7,7 @@
     <property name="title" translatable="yes">Farmácia Cotolengo - Login</property>
     <property name="resizable">False</property>
     <property name="window_position">center</property>
+    <property name="icon">../images/logo_farmacia_sem_escrita.svg</property>
     <property name="show_menubar">False</property>
     <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
     <child>
