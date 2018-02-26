@@ -8,10 +8,11 @@ import aux
 
 class GerenciamentoPermissoes(object):
 
-    def __init__(self, banco_dados, politica_tentativas_conexao, usuario):
+    def __init__(self, banco_dados, politica_tentativas_conexao, usuario, pai):
         self.banco_dados = banco_dados
         self.politica_tentativas_conexao = politica_tentativas_conexao
         self.usuario = usuario
+        self.pai = pai
 
         self.coll_usuarios = self.banco_dados['db'].usuarios
 
@@ -20,6 +21,8 @@ class GerenciamentoPermissoes(object):
         self.tela_gerenciamento_permissoes = builder.get_object('tela_gerenciamento_permissoes')
         self.botao_autorizar = builder.get_object('autorizar')
         self.botao_desautorizar = builder.get_object('desautorizar')
+
+        self.tela_gerenciamento_permissoes.set_transient_for(self.pai)
 
         self.botao_desautorizar.set_sensitive(False)
         self.botao_autorizar.set_sensitive(False)

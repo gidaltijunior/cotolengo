@@ -139,20 +139,23 @@ class ModuloBase(object):
     def func_abrir_tela_opcoes_definicoes(self, widget):
         tela_definicoes_aplicativo = DefinicoesAplicativo(banco_dados=self.banco_dados,
                                                           politica_tentativas_conexao=self.politica_tentativas_conexao,
-                                                          usuario=self.usuario)
+                                                          usuario=self.usuario,
+                                                          pai=self.tela_base)
         print('tela_definicoes_aplicativo', tela_definicoes_aplicativo, widget)
 
     def func_abrir_tela_opcoes_meu_usuario(self, widget):
         tela_meu_usuario = MeuUsuario(banco_dados=self.banco_dados,
                                       politica_tentativas_conexao=self.politica_tentativas_conexao,
-                                      usuario=self.usuario)
+                                      usuario=self.usuario,
+                                      pai=self.tela_base)
         print('tela_definicoes_aplicativo', tela_meu_usuario, widget)
 
     def func_abrir_tela_opcoes_gerenciamento_permissoes(self, widget):
         tela_gerenciamento_permissoes = GerenciamentoPermissoes(
             banco_dados=self.banco_dados,
             politica_tentativas_conexao=self.politica_tentativas_conexao,
-            usuario=self.usuario)
+            usuario=self.usuario,
+            pai=self.tela_base)
         print('tela_gerenciamento_permissoes', tela_gerenciamento_permissoes, widget)
 
     def func_abrir_tela_ajuda_documentacao(self, widget):

@@ -9,11 +9,12 @@ import aux
 
 class MeuUsuario(object):
 
-    def __init__(self, usuario, banco_dados, politica_tentativas_conexao):
+    def __init__(self, usuario, banco_dados, politica_tentativas_conexao, pai):
 
         self.usuario_logado = usuario
         self.banco_dados = banco_dados
         self.politica_tentativas_conexao = politica_tentativas_conexao
+        self.pai = pai
         self.coll_usuarios = self.banco_dados['db'].usuarios
 
         builder = Gtk.Builder()
@@ -27,6 +28,8 @@ class MeuUsuario(object):
         self.nova_senha_repetir = builder.get_object('nova_senha_repetir')
         self.atualizar_senha_botao = builder.get_object('atualizar_senha')
         self.data_criacao = builder.get_object('data_criacao')
+
+        self.tela_meu_usuario.set_transient_for(self.pai)
 
         self.lista_com_permissao = builder.get_object('lista_com_permissao')
         self.armazenamento_com_permissao = builder.get_object('armazenamento_com_permissao')

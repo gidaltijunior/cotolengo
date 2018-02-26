@@ -9,11 +9,12 @@ import aux
 
 class DefinicoesAplicativo(object):
 
-    def __init__(self, banco_dados, politica_tentativas_conexao, usuario):
+    def __init__(self, banco_dados, politica_tentativas_conexao, usuario, pai):
 
         self.banco_dados = banco_dados
         self.politica_tentativas_conexao_num = politica_tentativas_conexao
         self.usuario = usuario
+        self.pai = pai
         self.timeout = 10
         self.coll_definicoes_aplicativo = self.banco_dados['db'].definicoes_aplicativo
         self.coll_valores_intervencao = self.banco_dados['db'].valores_intervencao
@@ -34,6 +35,8 @@ class DefinicoesAplicativo(object):
         self.politica_acesso_inicial_todos = builder.get_object('politica_acesso_inicial1')
         self.politica_acesso_inicial_nenhum = builder.get_object('politica_acesso_inicial2')
         self.politica_tentativas_conexao = builder.get_object('politica_tentativas_conexao_bd_spin')
+
+        self.tela_definicoes_aplicativo.set_transient_for(self.pai)
 
         self.entrada_intervencao = builder.get_object('entrada_intervencao')
         self.lista_intervencao = builder.get_object('lista_intervencao')
