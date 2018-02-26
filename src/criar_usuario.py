@@ -5,6 +5,7 @@ import datetime as dt
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+import aux
 
 
 class CriarUsuario(object):
@@ -22,7 +23,6 @@ class CriarUsuario(object):
         self.fechar = builder.get_object('fechar')
         self.enviar_solicitacao = builder.get_object('enviar_solicitacao')
         self.statusbar_criar_usuario = builder.get_object('statusbar_criar_usuario')
-        self.statusbar_login = builder.get_object('statusbar_login')
 
         self.usuarios_db = usuarios_db
         self.definicoes_aplicativo = definicoes_aplicativo
@@ -57,9 +57,11 @@ class CriarUsuario(object):
                 cursor = self.usuarios_db.find({})
                 for item in cursor:
                     if item['usuario'] == self.nome_usuario.get_text():
+                        msg = 'Nome de usuário já existente. Escolha outro.'
                         self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('criar_usuario'),
-                                                          'Nome de usuário já existente. Escolha outro.')
+                                                          aux.statusbar_no_user(msg))
                         self.tela_criar_usuario.error_bell()
+                        userexists = True
                         break
                 else:
                     if self.politica_acesso_inicial == 'todos':
@@ -120,14 +122,18 @@ class CriarUsuario(object):
                                  'opcoes_meu_usuario': False,
                                  'opcoes_gerenciamento_permissoes': False}
                         })
+                    msg = 'Solicitação de novo usuário criada. Aguarde aprovação.'
                     self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('criar_usuario'),
-                                                      'Solicitação de novo usuário criada. Aguarde aprovação.')
+                                                      aux.statusbar_no_user(msg))
+                    break
+                if userexists is True:
                     break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_criar_usuario.push(self.statusbar_criar_usuario.get_context_id('conexao_banco'),
-                                              'Não foi possível estabelecer uma conexão com o banco de dados.')
+                                              aux.statusbar_no_user(msg))
 
     def func_validar_formulario(self, widget, focus):  # valida o formulario para habilitar o botao 'enviar solicitacao'
         print(widget, focus)

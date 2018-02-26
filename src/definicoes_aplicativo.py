@@ -5,14 +5,15 @@ import time
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-
+import aux
 
 class DefinicoesAplicativo(object):
 
-    def __init__(self, banco_dados, politica_tentativas_conexao):
+    def __init__(self, banco_dados, politica_tentativas_conexao, usuario):
 
         self.banco_dados = banco_dados
         self.politica_tentativas_conexao_num = politica_tentativas_conexao
+        self.usuario = usuario
         self.timeout = 10
         self.coll_definicoes_aplicativo = self.banco_dados['db'].definicoes_aplicativo
         self.coll_valores_intervencao = self.banco_dados['db'].valores_intervencao
@@ -121,9 +122,9 @@ class DefinicoesAplicativo(object):
                                       self.armazenamento_acatamento, 'acatamento')
                                  })
 
+        msg = 'Alterações nessas propriedades podem causar mudanças visíveis somente se o programa for reiniciado.'
         self.statusbar_definicoes_aplicativo.push(
-            self.statusbar_definicoes_aplicativo.get_context_id('info'),
-            'Alterações nessas propriedades podem causar mudanças visíveis somente se o programa for reiniciado.')
+            self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
         self.carregar_definicoes()
 
@@ -170,9 +171,10 @@ class DefinicoesAplicativo(object):
                 print('Tentando reconectar ao banco de dados.')
         else:
             self.salvar_e_fechar.set_sensitive(False)
+
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def carregar_valores(self, armazenamento, colecao):
         for retries in range(self.politica_tentativas_conexao_num):
@@ -185,9 +187,9 @@ class DefinicoesAplicativo(object):
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def adicionar_valores(self, widget, entrada, colecao, armazenamento, nome_tabela_formatado):
         print('adicionar_valores', nome_tabela_formatado, widget)
@@ -207,22 +209,23 @@ class DefinicoesAplicativo(object):
                         time.sleep(1)
                         tentativas += 1
                     self.carregar_valores(armazenamento, colecao)
+
+                    msg = 'O item "{0}" foi adicionado à tabela {1} com sucesso.'.format(valor, nome_tabela_formatado)
                     self.statusbar_definicoes_aplicativo.push(
-                        self.statusbar_definicoes_aplicativo.get_context_id('info'),
-                        'O item \'{0}\' foi adicionado à tabela {1} com sucesso.'.format(valor, nome_tabela_formatado))
+                        self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))
                     break
                 except errors.AutoReconnect:
                     print('Tentando reconectar ao banco de dados.')
             else:
                 print('conexão com o banco de dados não foi estabelecida')
+                msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
                 self.statusbar_definicoes_aplicativo.push(
-                    self.statusbar_definicoes_aplicativo.get_context_id('info'),
-                    'Não foi possível estabelecer uma conexão com o banco de dados.')
+                    self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))
         else:
+            msg = 'O campo de entrada da tabela "{0}" deve ser preenchido antes de ser adicionado à tabela.'.format(
+                nome_tabela_formatado)
             self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('info'),
-                'O campo de entrada da tabela {0} deve ser preenchido antes de'
-                ' ser adicionado à tabela.'.format(nome_tabela_formatado))
+                self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def remover_valores(self, widget, lista, colecao, armazenamento, nome_tabela_formatado):
         print('remover_valores', nome_tabela_formatado, widget)
@@ -238,21 +241,22 @@ class DefinicoesAplicativo(object):
                         time.sleep(1)
                         tentativas += 1
                     self.carregar_valores(armazenamento, colecao)
+
+                    msg = 'O item "{0}" foi removido da tabela "{1}" com sucesso.'.format(valor, nome_tabela_formatado)
                     self.statusbar_definicoes_aplicativo.push(
-                        self.statusbar_definicoes_aplicativo.get_context_id('info'),
-                        'O item \'{0}\' foi removido da tabela {1} com sucesso.'.format(valor, nome_tabela_formatado))
+                        self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))
                     break
                 except errors.AutoReconnect:
                     print('Tentando reconectar ao banco de dados.')
             else:
                 print('conexão com o banco de dados não foi estabelecida')
+                msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
                 self.statusbar_definicoes_aplicativo.push(
-                    self.statusbar_definicoes_aplicativo.get_context_id('info'),
-                    'Não foi possível estabelecer uma conexão com o banco de dados.')
+                    self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))
         else:
+            msg = 'Um item da tabela "{0}" deve ser selecionado antes de ser removido.'.format(nome_tabela_formatado)
             self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('info'),
-                'Um item da tabela {0} deve ser selecionado antes de ser removido.'.format(nome_tabela_formatado))
+                self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def salvar_definicoes_e_fechar(self, widget):
         print('salvar_definicoes_e_fechar', widget)
@@ -295,6 +299,6 @@ class DefinicoesAplicativo(object):
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_definicoes_aplicativo.push(
-                self.statusbar_definicoes_aplicativo.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_definicoes_aplicativo.get_context_id('info'), aux.statusbar(self.usuario, msg))

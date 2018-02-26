@@ -5,6 +5,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from base_module import ModuloBase
 from criar_usuario import CriarUsuario
+import aux
 
 
 class Login(object):
@@ -49,8 +50,9 @@ class Login(object):
                 coll_usuarios = db.usuarios
                 coll_definicoes_aplicativo = db.definicoes_aplicativo
                 client.server_info()
-                self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
-                                          'Conexão com banco de dados sucedida!')
+
+                msg = 'Conexão com banco de dados sucedida!'
+                self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'), aux.statusbar_no_user(msg))
                 banco_dados = {'client': client, 'db': db}
                 return banco_dados, coll_usuarios, coll_definicoes_aplicativo
             except pymongo.errors.AutoReconnect:
@@ -58,8 +60,9 @@ class Login(object):
         else:
             self.logar.set_sensitive(False)
             self.criar_usuario.set_sensitive(False)
-            self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
-                                      'Conexão com banco de dados falhou. Verifique.')
+
+            msg = 'Conexão com banco de dados falhou. Verifique.'
+            self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'), aux.statusbar_no_user(msg))
             self.tela_login.error_bell()
 
     def func_criar_usuario(self, widget):
@@ -80,8 +83,8 @@ class Login(object):
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
-            self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
-                                      'Não foi possível estabelecer uma conexão com o banco de dados.')
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
+            self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'), aux.statusbar_no_user(msg))
             return
 
         if item is not None:
@@ -89,13 +92,13 @@ class Login(object):
                 new_hash = CriarUsuario.hash_password(self.senha.get_text())
                 self.validacao_ok = self.compare_hashes(stored_hash=item['senha'], new_hash=new_hash)
             else:
-                self.statusbar_login.push(self.statusbar_login.get_context_id('login'),
-                                          'Usuário não autorizado.')
+                msg = 'Usuário não autorizado.'
+                self.statusbar_login.push(self.statusbar_login.get_context_id('login'), aux.statusbar_no_user(msg))
                 self.tela_login.error_bell()
                 return
         else:
-            self.statusbar_login.push(self.statusbar_login.get_context_id('login'),
-                                      'Usuário não cadastrado.')
+            msg = 'Usuário não cadastrado.'
+            self.statusbar_login.push(self.statusbar_login.get_context_id('login'), aux.statusbar_no_user(msg))
             self.tela_login.error_bell()
             return
 
@@ -108,8 +111,8 @@ class Login(object):
                                     hspw=new_hash)
             print(modulobase)
         else:
-            self.statusbar_login.push(self.statusbar_login.get_context_id('login'),
-                                      'Senha incorreta.')
+            msg = 'Senha incorreta.'
+            self.statusbar_login.push(self.statusbar_login.get_context_id('login'), aux.statusbar_no_user(msg))
             self.tela_login.error_bell()
 
     @staticmethod
@@ -138,9 +141,10 @@ class Login(object):
             except errors.AutoReconnect:
                 print('Banco de Dados não está disponível. Tentando novamente:', retries)
             except AttributeError:
-                print('As coleções não foram definidas no passa anterior, provável erro de conexão com o banco.')
+                print('As coleções não foram definidas no passo anterior, provável erro de conexão com o banco.')
         else:
             self.logar.set_sensitive(False)
             self.criar_usuario.set_sensitive(False)
-            self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'),
-                                      'Não foi possível estabelecer uma conexão com o banco de dados.')
+
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
+            self.statusbar_login.push(self.statusbar_login.get_context_id('db_status'), aux.statusbar_no_user(msg))

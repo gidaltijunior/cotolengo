@@ -3,13 +3,15 @@ from pymongo import errors
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+import aux
 
 
 class GerenciamentoPermissoes(object):
 
-    def __init__(self, banco_dados, politica_tentativas_conexao):
+    def __init__(self, banco_dados, politica_tentativas_conexao, usuario):
         self.banco_dados = banco_dados
         self.politica_tentativas_conexao = politica_tentativas_conexao
+        self.usuario = usuario
 
         self.coll_usuarios = self.banco_dados['db'].usuarios
 
@@ -90,9 +92,9 @@ class GerenciamentoPermissoes(object):
             'on_salvar_clicked': self.salvar
         })
 
+        msg = 'Alterar autorizações e permissões sem autorização é um grave risco de segurança das informações.'
         self.statusbar_gerenciamento_permissoes.push(
-            self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-            'Alterar autorizações e permissões sem autorização é um grave risco de segurança das informações.')
+            self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
         self.carregar_usuarios()
         self.carregar_desautorizados()
@@ -111,17 +113,18 @@ class GerenciamentoPermissoes(object):
                 print('autorizados', autorizados)
                 self.carregar_desautorizados()
                 self.carregar_autorizados()
+
+                msg = 'O usuário "{0}" foi autorizado com sucesso.'.format(valor)
                 self.statusbar_gerenciamento_permissoes.push(
-                    self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                    'O usuário \'{0}\' foi autorizado com sucesso.'.format(valor))
+                    self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
             print('conexão com o banco de dados não foi estabelecida')
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_gerenciamento_permissoes.push(
-                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def autorizado_selecionado(self, widget):
         print('autorizado_selecionado', widget)
@@ -140,17 +143,18 @@ class GerenciamentoPermissoes(object):
                 print('desautorizados', desautorizados)
                 self.carregar_desautorizados()
                 self.carregar_autorizados()
+
+                msg = 'O usuário "{0}" foi desautorizado com sucesso.'.format(valor)
                 self.statusbar_gerenciamento_permissoes.push(
-                    self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                    'O usuário \'{0}\' foi desautorizado com sucesso.'.format(valor))
+                    self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
             print('conexão com o banco de dados não foi estabelecida')
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_gerenciamento_permissoes.push(
-                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def desautorizado_selecionado(self, widget):
         print('desautorizado_selecionado', widget)
@@ -212,17 +216,17 @@ class GerenciamentoPermissoes(object):
                     })
                 print('permissões concedidas', permissoes)
 
+                msg = 'Lista de permissões para o usuário "{0}" atualizada com sucesso.'.format(valor)
                 self.statusbar_gerenciamento_permissoes.push(
-                    self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                    'Lista de permissões para o usuário \'{0}\' atualizada com sucesso.'.format(valor))
+                    self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
             print('conexão com o banco de dados não foi estabelecida')
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_gerenciamento_permissoes.push(
-                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def carregar_autorizados(self):
         for retries in range(self.politica_tentativas_conexao):
@@ -237,9 +241,9 @@ class GerenciamentoPermissoes(object):
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_gerenciamento_permissoes.push(
-                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def carregar_desautorizados(self):
         for retries in range(self.politica_tentativas_conexao):
@@ -254,9 +258,9 @@ class GerenciamentoPermissoes(object):
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_gerenciamento_permissoes.push(
-                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def carregar_usuarios(self):
         for retries in range(self.politica_tentativas_conexao):
@@ -269,9 +273,9 @@ class GerenciamentoPermissoes(object):
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_gerenciamento_permissoes.push(
-                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def carregar_checkboxes(self, widget):
         print('carregar_checkboxes', widget)
@@ -378,17 +382,17 @@ class GerenciamentoPermissoes(object):
                 else:
                     self.checkbutton_opcoes_gerenciamento_permissoes.set_active(False)
 
+                msg = 'Lista de permissões para o usuário "{0}" carregado com sucesso.'.format(valor)
                 self.statusbar_gerenciamento_permissoes.push(
-                    self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                    'Lista de permissões para o usuário \'{0}\' carregado com sucesso.'.format(valor))
+                    self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
             print('conexão com o banco de dados não foi estabelecida')
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_gerenciamento_permissoes.push(
-                self.statusbar_gerenciamento_permissoes.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_gerenciamento_permissoes.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def fechar(self, widget):
         print('fechar', widget)

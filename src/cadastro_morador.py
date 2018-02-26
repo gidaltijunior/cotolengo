@@ -6,13 +6,14 @@ from pymongo import errors
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+import aux
 
 
 class CadastroMorador(object):
 
     def __init__(self, usuario, banco_dados, politica_tentativas_conexao):
 
-        self.usuario_logado = usuario
+        self.usuario = usuario
         self.banco_dados = banco_dados
         self.politica_tentativas_conexao = politica_tentativas_conexao
         self.coll_moradores = self.banco_dados['db'].moradores
@@ -124,9 +125,9 @@ class CadastroMorador(object):
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def detalhar_dados(self, widget):
         print('detalhar_dados', widget)
@@ -168,17 +169,17 @@ class CadastroMorador(object):
                 else:
                     self.atualizar_ativo.set_active(False)
 
+                msg = 'Detalhes do morador "{0}" carregado com sucesso.'.format(morador['nome'])
                 self.statusbar_cadastro_moradores.push(
-                    self.statusbar_cadastro_moradores.get_context_id('info'),
-                    'Detalhes do morador "{0}" carregado com sucesso.'.format(morador['nome']))
+                    self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
             print('conexão com o banco de dados não foi estabelecida')
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
     def atualizar_dados(self, widget):
         print('atualizar_dados', widget)
@@ -203,9 +204,9 @@ class CadastroMorador(object):
         if len(nome) > 0:
             pass
         else:
+            msg = 'Campo "Nome" não pode estar vazio.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Campo "Nome" não pode estar vazio.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
             return
 
@@ -215,24 +216,24 @@ class CadastroMorador(object):
                                          tzinfo=dt.timezone.utc)
             except Exception as e:
                 print(Exception, e)
+                msg = 'Conteúdo do campo "Data de Nascimento" não é valido. Formato esperado é DD/MM/AAAA.'
                 self.statusbar_cadastro_moradores.push(
-                    self.statusbar_cadastro_moradores.get_context_id('info'),
-                    'Conteúdo do campo "Data de Nascimento" não é valido. Formato esperado é DD/MM/AAAA.')
+                    self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
                 self.tela_cadastro_morador.error_bell()
                 return
         else:
+            msg = 'Campo "Data de Nascimento" não pode estar vazio.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Campo "Data de Nascimento" não pode estar vazio.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
             return
 
         if len(lar) > 0:
             pass
         else:
+            msg = 'Campo "Lar" não pode estar vazio.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Campo "Lar" não pode estar vazio.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
             return
 
@@ -241,9 +242,9 @@ class CadastroMorador(object):
         if float(peso) > 0:
             peso = float(peso)
         else:
+            msg = 'Campo "Peso" não pode ser zero.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Campo "Peso" não pode ser zero.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
             return
 
@@ -262,21 +263,21 @@ class CadastroMorador(object):
                 )
                 print('Atualização realizada para object_id:', objectid_id)
 
-                path = modelo.get_path(iteracao) # o número da linha na lista de moradores
-                self.carregar_lista() # refresh na lista de moradores
-                self.lista_moradores.set_cursor(path) # selecionamos a mesma linha antes do refresh
+                path = modelo.get_path(iteracao)  # o número da linha na lista de moradores
+                self.carregar_lista()  # refresh na lista de moradores
+                self.lista_moradores.set_cursor(path)  # selecionamos a mesma linha antes do refresh
 
+                msg = 'O cadastro do morador "{0}" foi atualizado com sucesso.'.format(nome)
                 self.statusbar_cadastro_moradores.push(
-                    self.statusbar_cadastro_moradores.get_context_id('info'),
-                    'O cadastro do morador "{0}" foi atualizado com sucesso.'.format(nome))
+                    self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
             print('conexão com o banco de dados não foi estabelecida')
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
 
     def incluir_morador(self, widget):
@@ -298,9 +299,9 @@ class CadastroMorador(object):
         if len(nome) > 0:
             pass
         else:
+            msg = 'Campo "Nome" não pode estar vazio.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Campo "Nome" não pode estar vazio.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
             return
 
@@ -310,24 +311,24 @@ class CadastroMorador(object):
                                          tzinfo=dt.timezone.utc)
             except Exception as e:
                 print(Exception, e)
+                msg = 'Conteúdo do campo "Data de Nascimento" não é valido. Formato esperado é DD/MM/AAAA.'
                 self.statusbar_cadastro_moradores.push(
-                    self.statusbar_cadastro_moradores.get_context_id('info'),
-                    'Conteúdo do campo "Data de Nascimento" não é valido. Formato esperado é DD/MM/AAAA.')
+                    self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
                 self.tela_cadastro_morador.error_bell()
                 return
         else:
+            msg = 'Campo "Data de Nascimento" não pode estar vazio.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Campo "Data de Nascimento" não pode estar vazio.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
             return
 
         if len(lar) > 0:
             pass
         else:
+            msg = 'Campo "Lar" não pode estar vazio.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Campo "Lar" não pode estar vazio.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
             return
 
@@ -336,9 +337,9 @@ class CadastroMorador(object):
         if float(peso) > 0:
             peso = float(peso)
         else:
+            msg = 'Campo "Peso" não pode ser zero.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Campo "Peso" não pode ser zero.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
             return
 
@@ -371,17 +372,18 @@ class CadastroMorador(object):
                 self.novo_lar.set_text('')
                 self.novo_peso.set_text('')
                 self.novo_textbuffer.set_text('', -1)
+
+                msg = 'O morador \'{0}\' foi adicionado ao cadastro com sucesso.'.format(nome)
                 self.statusbar_cadastro_moradores.push(
-                    self.statusbar_cadastro_moradores.get_context_id('info'),
-                    'O morador \'{0}\' foi adicionado ao cadastro com sucesso.'.format(nome))
+                    self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             print('conexão com o banco de dados não foi estabelecida')
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
 
     def corrigir_calendario(self, widget, focus, campo_data, calendario):
@@ -392,9 +394,9 @@ class CadastroMorador(object):
             calendario.select_day(int(data[:2]))
         except Exception as e:
             print(type(e), e)
+            msg = 'Conteúdo do campo "Data de Nascimento" não é valido. Formato esperado é DD/MM/AAAA.'
             self.statusbar_cadastro_moradores.push(
-                self.statusbar_cadastro_moradores.get_context_id('info'),
-                'Conteúdo do campo "Data de Nascimento" não é valido. Formato esperado é DD/MM/AAAA.')
+                self.statusbar_cadastro_moradores.get_context_id('info'), aux.statusbar(self.usuario, msg))
             self.tela_cadastro_morador.error_bell()
             return
 

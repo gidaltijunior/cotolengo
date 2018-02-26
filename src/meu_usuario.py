@@ -4,6 +4,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from criar_usuario import CriarUsuario
+import aux
 
 
 class MeuUsuario(object):
@@ -49,9 +50,9 @@ class MeuUsuario(object):
                                  'on_fechar_clicked': self.fechar
                                  })
 
+        msg = 'Caso altere a senha, tome nota, pois será requisitada no próximo login.'
         self.statusbar_meu_usuario.push(
-            self.statusbar_meu_usuario.get_context_id('info'),
-            'Caso altere a senha, tome nota, pois será requisitada no próximo login.')
+            self.statusbar_meu_usuario.get_context_id('info'), aux.statusbar(self.usuario_logado, msg))
 
         self.carregar_definicoes()
 
@@ -85,9 +86,9 @@ class MeuUsuario(object):
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_meu_usuario.push(
-                self.statusbar_meu_usuario.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_meu_usuario.get_context_id('info'), aux.statusbar(self.usuario_logado, msg))
 
     def atualizar_dados(self, widget):
         print('atualizar_dados', widget)
@@ -96,16 +97,17 @@ class MeuUsuario(object):
         for retries in range(self.politica_tentativas_conexao):
             try:
                 self.coll_usuarios.update({'usuario': self.usuario_logado}, {'$set': {'nome': nome, 'e-mail': email}})
+
+                msg = 'Dados atualizados com sucesso!'
                 self.statusbar_meu_usuario.push(
-                    self.statusbar_meu_usuario.get_context_id('info'),
-                    'Dados atualizados com sucesso!')
+                    self.statusbar_meu_usuario.get_context_id('info'), aux.statusbar(self.usuario_logado, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_meu_usuario.push(
-                self.statusbar_meu_usuario.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_meu_usuario.get_context_id('info'), aux.statusbar(self.usuario_logado, msg))
 
     def atualizar_senha(self, widget):
         print('atualizar_senha', widget)
@@ -119,20 +121,21 @@ class MeuUsuario(object):
 
                 if senha_atual == senha_atual_db:
                     self.coll_usuarios.update({'usuario': self.usuario_logado}, {'$set': {'senha': senha_nova}})
+
+                    msg = 'Sua senha foi atualizada com sucesso! Não a esqueça.'
                     self.statusbar_meu_usuario.push(
-                        self.statusbar_meu_usuario.get_context_id('info'),
-                        'Sua senha foi atualizada com sucesso! Não a esqueça.')
+                        self.statusbar_meu_usuario.get_context_id('info'), aux.statusbar(self.usuario_logado, msg))
                 else:
+                    msg = 'A senha atual não é a mesma cadastrada no banco de dados.'
                     self.statusbar_meu_usuario.push(
-                        self.statusbar_meu_usuario.get_context_id('info'),
-                        'A senha atual não é a mesma cadastrada no banco de dados.')
+                        self.statusbar_meu_usuario.get_context_id('info'), aux.statusbar(self.usuario_logado, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
             self.statusbar_meu_usuario.push(
-                self.statusbar_meu_usuario.get_context_id('info'),
-                'Não foi possível estabelecer uma conexão com o banco de dados.')
+                self.statusbar_meu_usuario.get_context_id('info'), aux.statusbar(self.usuario_logado, msg))
 
     def validar_troca_senha(self, widget, focus):  # valida o formulario para habilitar o botao 'enviar solicitacao'
         print(widget, focus)

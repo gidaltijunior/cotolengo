@@ -7,6 +7,7 @@ from definicoes_aplicativo import DefinicoesAplicativo
 from meu_usuario import MeuUsuario
 from gerenciamento_permissoes import GerenciamentoPermissoes
 from cadastro_morador import CadastroMorador
+import aux
 
 
 class ModuloBase(object):
@@ -73,7 +74,8 @@ class ModuloBase(object):
                                  "on_ajuda_documentacao_activate": self.func_abrir_tela_ajuda_documentacao,
                                  "on_ajuda_sobre_activate": self.func_abrir_tela_sobre})
 
-        self.statusbar_base.push(self.statusbar_base.get_context_id('info'), 'Bem-vindo(a) ' + usuario + '!')
+        msg = 'Bem-vindo(a) ' + usuario + '!'
+        self.statusbar_base.push(self.statusbar_base.get_context_id('info'), aux.statusbar(self.usuario, msg))
 
         self.tela_base.show_all()
 
@@ -136,7 +138,8 @@ class ModuloBase(object):
 
     def func_abrir_tela_opcoes_definicoes(self, widget):
         tela_definicoes_aplicativo = DefinicoesAplicativo(banco_dados=self.banco_dados,
-                                                          politica_tentativas_conexao=self.politica_tentativas_conexao)
+                                                          politica_tentativas_conexao=self.politica_tentativas_conexao,
+                                                          usuario=self.usuario)
         print('tela_definicoes_aplicativo', tela_definicoes_aplicativo, widget)
 
     def func_abrir_tela_opcoes_meu_usuario(self, widget):
@@ -148,7 +151,8 @@ class ModuloBase(object):
     def func_abrir_tela_opcoes_gerenciamento_permissoes(self, widget):
         tela_gerenciamento_permissoes = GerenciamentoPermissoes(
             banco_dados=self.banco_dados,
-            politica_tentativas_conexao=self.politica_tentativas_conexao)
+            politica_tentativas_conexao=self.politica_tentativas_conexao,
+            usuario=self.usuario)
         print('tela_gerenciamento_permissoes', tela_gerenciamento_permissoes, widget)
 
     def func_abrir_tela_ajuda_documentacao(self, widget):
@@ -267,11 +271,14 @@ class ModuloBase(object):
                     self.opcoes_definicoes.hide()
                     self.opcoes_meu_usuario.hide()
                     self.opcoes_gerenciamento_permissoes.hide()
-                    self.statusbar_base.push(self.statusbar_base.get_context_id('permissoes'),
-                                             'Não foi possível acessar as políticas de módulos sem permissão.')
+
+                    msg = 'Não foi possível acessar as políticas de módulos sem permissão.'
+                    self.statusbar_base.push(self.statusbar_base.get_context_id('permissoes'), aux.statusbar(
+                        self.usuario, msg))
                 break
             except errors.AutoReconnect:
                 print('Tentando reconectar ao banco de dados.')
         else:
-            self.statusbar_base.push(self.statusbar_base.get_context_id('db_status'),
-                                     'Não foi possível estabelecer uma conexão com o banco de dados.')
+
+            msg = 'Não foi possível estabelecer uma conexão com o banco de dados.'
+            self.statusbar_base.push(self.statusbar_base.get_context_id('db_status'), aux.statusbar(self.usuario, msg))
