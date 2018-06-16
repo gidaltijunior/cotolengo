@@ -4,16 +4,16 @@
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkAboutDialog" id="tela_sobre">
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Sobre - Farmácia Cotolengo</property>
+    <property name="title" translatable="yes">Sobre - Farmácia Clínica</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
     <property name="gravity">center</property>
-    <property name="program_name">Farmácia - Cotolengo</property>
+    <property name="program_name">Farmácia Clínica</property>
     <property name="version">0.1</property>
     <property name="copyright" translatable="yes">Copyright (C) 2017  Gidalti Lourenço Junior</property>
-    <property name="comments" translatable="yes">Esse aplicativo destina-se a facilitar o trabalho na farmácia e farmácia clínica da Organização Não Governamental Pequeno Cotolengo em Curitiba-PR, e foi feito sem nenhum custo para a entidade.</property>
+    <property name="comments" translatable="yes">Esse aplicativo destina-se a facilitar o trabalho nas farmácias clínicas de entidades que cuidam de pacientes, oferecendo um fluxo de trabalho simples e completo, baseado em permissões.</property>
     <property name="website">https://github.com/gidaltijunior/cotolengo</property>
     <property name="website_label" translatable="yes">Projeto no GitHub</property>
     <property name="authors">Gidalti Lourenço Junior &lt;gidaltijunior@gmail.com&gt; - gidaltijunior@gmail.com</property>
