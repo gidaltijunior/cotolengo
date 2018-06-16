@@ -8,30 +8,30 @@ Abaixo alguns prints do material já desenvolvido, porém que está em constante
 
 Tela de Login:
 
-![Tela de login](https://imgur.com/U9f1BCZ)
+![Tela de login](https://i.imgur.com/U9f1BCZ.png)
 
 Tela de criação de usuário:
 
-![Tela de criação de usuário](https://imgur.com/9YcbAiZ)
+![Tela de criação de usuário](https://i.imgur.com/9YcbAiZ.png)
 
 Tela principal:
 
-![Tela principal](https://imgur.com/brKYVPl)
+![Tela principal](https://i.imgur.com/brKYVPl.png)
 
 Tela de dados do usuário logado:
 
-![Tela meus dados](https://imgur.com/EJ67XEz)
+![Tela meus dados](https://i.imgur.com/EJ67XEz.png)
 
 Tela de definições do aplicativo:
 
-![Tela de definições do aplicativo](https://imgur.com/3TzQ1m9)
+![Tela de definições do aplicativo](https://i.imgur.com/3TzQ1m9.png)
 
 Tela de autorizações e permissões:
 
-![Tela de permissões](https://imgur.com/XeWJ3E2)
+![Tela de permissões](https://i.imgur.com/XeWJ3E2.png)
 
 Sobre:
 
-![Sobre](https://imgur.com/9yQmob1)
+![Sobre](https://i.imgur.com/9yQmob1.png)
 
 Dúvidas? Mande um e-mail para gidaltijunior@gmail.com com perguntas.
